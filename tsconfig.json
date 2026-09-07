@@ -22,5 +22,15 @@
 
     "noEmit": true
   },
-  "include": ["src", "vite.config.ts", "eslint.config.js", ".storybook"]
+  /* `vitest.setup.ts` has to be here, not just loaded at runtime: it is what registers the
+   * jest-dom matcher types, and without it `tsc` rejects every `toBeInTheDocument`. */
+  "include": [
+    "src",
+    "scripts",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "vitest.setup.ts",
+    "eslint.config.js",
+    ".storybook"
+  ]
 }

@@ -43,6 +43,68 @@ const toDoubleScore = (score: number) => score * 2
 Event handlers: `handle` + noun + verb → `handleModalClose`, `handleInputChange`.
 Booleans: prefix `is`, `has`, `can`, `should` → `isLoading`, `hasError`, `canSubmit`.
 
+### Booleans: `true` marks the deviation
+
+The consistency worth having is not that every boolean behaves alike — it is that each one's
+purpose is obvious at the call site. Three kinds, and the kind decides the shape.
+
+**1. Optional flags — `true` is the departure from normal.** JSX's shorthand only sets `true`,
+so the bare form should be the interesting one. Name the prop for what setting it *does*, and
+let the default behaviour be its absence. HTML works this way: `disabled`, `hidden`, `readonly`,
+`inert`.
+
+```tsx
+// Good — the flag marks the exception
+<Tabs hideDots />
+<Modal isPersistent>
+
+// Bad — the only interesting direction costs an explicit false at every call site
+<Tabs hasDots={false} />
+<Modal isDismissible={false}>
+```
+
+`isDismissible` and `hasArrows` / `hasDots` were both named the other way first, and both failed
+on the first call site written against them.
+
+**2. State the consumer owns — required, never defaulted.** `isOpen`, `isActive`, `activeTabId`,
+`openIds`. A default here would let a component render a state nobody chose, and quietly
+disagree with the consumer's own. These carry no default at all.
+
+**3. Computed inputs — whichever reading is clearest.** A boolean always fed an expression never
+appears bare, so the shorthand argument does not apply. `Stepper`'s
+`canDecrease={value > minimum}` stays positive, because nobody writes `<Stepper canDecrease />`
+and `isAtMinimum` would only invert the reader's work.
+
+### A prop that forwards a native attribute keeps the native name
+
+`disabled`, not `isDisabled`. `type`, `className`, `style`, `aria-*` — same rule, already
+followed everywhere because those arrive through the element's own prop types.
+
+The library shipped `disabled` on `Button` and `Input` (inherited from the HTML attribute types)
+and `isDisabled` on `Chip` and `Collapse` at the same time, so a consumer learned one name and
+hit a type error with the other. The prefix convention above applies to library state —
+`isOpen`, `isActive`, `isFullWidth` — never to an attribute being passed straight through.
+
+### Polymorphic element props are `as`, or `<slot>As`
+
+`as` when the prop changes the component's **own** root element; `<slot>As` when it changes an
+element the component renders **inside** itself.
+
+```tsx
+<SectionLabel as="h3">        // the label is the element
+<Section titleAs="h2">        // the section renders a title inside itself
+<Collapse titleAs="h3">       // the heading wraps the trigger
+```
+
+Values are tag names (`'h2'`…`'h6'`), not numbers. `headingLevel={3}` was the first attempt and
+reads as a magic prop — the level is a detail of the tag, and no library names it that way.
+Most either hardcode a level (Radix `h3`, Chakra `h2`) or render no heading at all (MUI, antd);
+none of those is right for a component that is sometimes a page section and sometimes a control
+inside a form.
+
+The shared union is `HeadingTag` in `src/types/heading.ts`, widened per component with whatever
+its non-heading default is (`'span'` for `SectionLabel`, `'div'` for `Collapse`).
+
 Callback props take `on` + noun + verb → `onValueChange`, `onClose`.
 
 ---
@@ -319,6 +381,43 @@ Checked when a component is written, not after:
   is not.
 - **Style from the attribute that already carries the state.** `[aria-pressed='true']` on
   `Chip`, `[aria-invalid]` on `Input` — never a second attribute mirroring them.
+- **No `<header>` or `<footer>` inside a component.** They map to the `banner` and
+  `contentinfo` landmarks. The rule that scopes them away inside sectioning content is not
+  applied consistently — the accessibility check computed `banner` for a `<header>` inside a
+  `<section>`, which is the markup that rule is supposed to cover. A page of cards each
+  announcing a page banner is a real defect, and a `<div>` costs nothing. `Modal` and `Card`
+  both use divs for their bands.
+
+## Tests
+
+Vitest with Testing Library and jsdom. `pnpm test`.
+
+**Test the contract, not the rendering.** No snapshots — they fail on every intentional change
+and pass through every accessibility regression. Assert what a consumer or a screen reader
+would observe:
+
+- the accessible name, role and state (`getByRole('button', { name, pressed })`)
+- the wiring a consumer cannot see: label association, `aria-describedby`, `aria-invalid`
+- that callbacks fire, from pointer **and** from keyboard
+- that props pass through to the native element
+- that landmarks are not added by accident
+
+**Do not test appearance.** jsdom computes no layout, so a style assertion there is theatre.
+`css` is off in `vitest.config.ts` for that reason. Appearance is Storybook's job, and
+@jposawa's.
+
+The tests that earn their place are the ones covering what fails *silently*. All three
+accessibility bugs found in review — an `Avatar` with no accessible name, an error message that
+was never announced, a landmark added by a `<header>` — passed lint, types and build.
+
+**Query in the same order a user would find it:** role, then label, then text. Reaching for
+`querySelector` or a test id means the thing is probably not reachable by anyone else either.
+
+### jsdom does not implement `<dialog>`
+
+`showModal()` and `close()` are stubbed in `vitest.setup.ts` to flip the `open` attribute and
+fire `close`. Focus trapping, the top layer and the backdrop are the browser's, are **not**
+simulated, and must not be claimed by a test.
 
 ### Container-driven layout
 

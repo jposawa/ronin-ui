@@ -7,8 +7,24 @@
   .dialog {
     width: 100%;
     max-height: 85svh;
-    padding: 0;
     margin: auto;
+
+    /**
+     * The dialog is the column itself. An inner wrapper with `max-height: inherit` was the
+     * cause of the double scrollbar: it inherited the same `85svh` the dialog has, while the
+     * dialog's content box is that minus its borders — so the wrapper was two pixels too tall
+     * and the dialog scrolled as well as the body.
+     *
+     * Only under `[open]`. A bare `display: flex` here would beat the user agent's
+     * `dialog:not([open]) { display: none }` and leave the dialog visible while closed.
+     */
+    &[open] {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Children scroll; this one never does, and it keeps content inside the corner radius. */
+    overflow: hidden;
 
     background: var(--color-bg-elevated);
     border: var(--border-width) solid var(--color-border);
@@ -34,12 +50,6 @@
       max-width: 48rem;
     }
 
-    .panel {
-      display: flex;
-      flex-direction: column;
-      max-height: inherit;
-    }
-
     .header {
       display: flex;
       align-items: flex-start;
@@ -48,6 +58,10 @@
 
       padding: var(--space-4) var(--space-5);
       border-bottom: var(--border-width) solid var(--color-border);
+
+      /* Necessary, not decorative: without it the header is squeezed by a long body instead
+       * of the body scrolling. Same reason on the footer. */
+      flex-shrink: 0;
     }
 
     .title {
@@ -128,6 +142,13 @@
       padding: var(--space-5);
 
       /**
+       * A flex item will not shrink below its content's size unless this is zero — without it
+       * the body keeps its full height, the dialog overflows, and the scrollbar appears on the
+       * dialog instead of here.
+       */
+      min-height: 0;
+
+      /**
        * `overflow-y: auto` alone is a trap: when one axis is not `visible`, the other computes
        * to `auto` too, so content a pixel too wide gets its own horizontal scrollbar. Pinning
        * x to `hidden` keeps the vertical scroll and drops the stray horizontal one.
@@ -149,6 +170,8 @@
 
       padding: var(--space-4) var(--space-5);
       border-top: var(--border-width) solid var(--color-border);
+
+      flex-shrink: 0;
     }
   }
 }

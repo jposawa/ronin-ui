@@ -1,0 +1,117 @@
+@layer ronin.components {
+  .collapse {
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+
+    /**
+     * The header is the row; the trigger is only the part of it that toggles. Anything in
+     * `actions` sits beside the button rather than inside it — which is what makes an
+     * interactive header possible at all, since a `<button>` cannot contain another.
+     */
+    .header {
+      display: flex;
+      align-items: center;
+    }
+
+    .heading {
+      margin: 0;
+      font-size: inherit;
+      font-weight: inherit;
+      /* The trigger takes the row; actions take only what they need. */
+      flex-grow: 1;
+      min-width: 0;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      flex-shrink: 0;
+      padding-inline-end: var(--space-3);
+    }
+
+    .trigger {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      width: 100%;
+
+      min-height: var(--size-touch-target);
+      padding: var(--space-3) var(--space-4);
+
+      background: transparent;
+      border: none;
+
+      color: var(--color-text-strong);
+      font-family: inherit;
+      font-size: var(--text-md);
+      font-weight: 600;
+      text-align: start;
+
+      cursor: pointer;
+      transition: background-color var(--duration-fast) var(--easing-standard);
+
+      &:hover:not(:disabled) {
+        background: var(--color-surface);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: -2px;
+      }
+
+      &:disabled {
+        color: var(--color-text-disabled);
+        cursor: not-allowed;
+      }
+
+      /**
+       * Styled from the attribute that already carries the state.
+       *
+       * The chevron is a square with its top and right borders drawn, so its apex points
+       * north-east before any rotation: 45° turns it east (closed), 135° turns it south
+       * (open). An earlier version used -135°, which points it west.
+       */
+      &[aria-expanded='true'] .icon {
+        transform: rotate(135deg);
+      }
+    }
+
+    .title {
+      flex-grow: 1;
+    }
+
+    .detail {
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+      font-weight: 600;
+    }
+
+    /* A chevron drawn from two borders — no glyph, so it centres in any typeface. */
+    .icon {
+      width: 0.5rem;
+      height: 0.5rem;
+      flex-shrink: 0;
+
+      border-top: 2px solid currentcolor;
+      border-right: 2px solid currentcolor;
+      /* Points east while closed; the open rule turns it south. */
+      transform: rotate(45deg);
+
+      transition: transform var(--duration-fast) var(--easing-standard);
+    }
+
+    .body {
+      padding: var(--space-4);
+      border-top: var(--border-width) solid var(--color-border);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .trigger,
+      .icon {
+        transition: none;
+      }
+    }
+  }
+}

@@ -9,17 +9,15 @@ import styles from './Section.module.css'
 export type SectionProps = BaseComponent & {
   children: React.ReactNode
   /**
-   * The heading text. Nullish renders no label at all — useful for a block that is grouped
-   * and spaced like the others but does not announce itself.
+   * The title, or a heading element wrapping it — `title={<h2>Account</h2>}` renders the label
+   * as that tag and puts it in the document outline.
+   *
+   * Nullish renders no label at all, which is useful for a block that is grouped and spaced
+   * like the others but does not announce itself.
    */
   title?: React.ReactNode
   /** Secondary text on the title's line — typically a count, such as `3/8` or `12 items`. */
   detail?: React.ReactNode
-  /**
-   * Renders the title as a real heading at this level and puts it in the document outline.
-   * Omit it when the page already has a heading covering this block.
-   */
-  headingLevel?: 2 | 3 | 4 | 5 | 6
 }
 
 /**
@@ -36,7 +34,6 @@ export const Section = ({
   children,
   title,
   detail,
-  headingLevel,
   className,
   style,
 }: SectionProps) => (
@@ -52,9 +49,7 @@ export const Section = ({
    */
   <section className={clsx(RONIN_SCOPE, styles.section, className)} style={style}>
     {title ? (
-      <SectionLabel headingLevel={headingLevel} detail={detail}>
-        {title}
-      </SectionLabel>
+      <SectionLabel detail={detail}>{title}</SectionLabel>
     ) : null}
 
     {children}

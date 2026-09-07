@@ -12,7 +12,7 @@ export type ChipProps = BaseComponent & {
   isActive: boolean
   onToggle: () => void
   intent?: ChipIntent
-  isDisabled?: boolean
+  disabled?: boolean
   /**
    * Overrides the intent with a one-off colour — any CSS colour, or a token reference such
    * as `var(--color-brand-teal)`.
@@ -29,7 +29,7 @@ export const Chip = ({
   isActive,
   onToggle,
   intent = 'primary',
-  isDisabled = false,
+  disabled = false,
   color,
   className,
   style,
@@ -40,7 +40,7 @@ export const Chip = ({
     style={{ ...style, '--chip-color': color } as React.CSSProperties}
     data-intent={intent}
     aria-pressed={isActive}
-    disabled={isDisabled}
+    disabled={disabled}
     onClick={onToggle}
   >
     {label}

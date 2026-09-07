@@ -36,8 +36,10 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "prepublishOnly": "pnpm build",
-    "verify:contrast": "node scripts/verify-contrast.mjs"
+    "prepublishOnly": "pnpm typecheck && pnpm lint && pnpm test && pnpm verify:contrast && pnpm build",
+    "verify:contrast": "node scripts/verify-contrast.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "peerDependencies": {
     "react": ">=18",
@@ -51,6 +53,9 @@
     "@eslint/js": "^10.0.1",
     "@storybook/addon-docs": "^10.6.0",
     "@storybook/react-vite": "^10.6.0",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
@@ -59,12 +64,33 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-simple-import-sort": "^13.0.0",
     "globals": "^17.11.0",
+    "jsdom": "^30.0.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "storybook": "^10.6.0",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.67.0",
     "vite": "^8.2.2",
-    "vite-plugin-lib-inject-css": "^2.2.2"
+    "vite-plugin-lib-inject-css": "^2.2.2",
+    "vitest": "^5.0.0"
+  },
+  "keywords": [
+    "react",
+    "component-library",
+    "ui",
+    "design-tokens",
+    "css-modules",
+    "accessibility",
+    "a11y",
+    "typescript",
+    "wcag"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JPOsawa/ronin-ui.git"
+  },
+  "homepage": "https://github.com/JPOsawa/ronin-ui#readme",
+  "bugs": {
+    "url": "https://github.com/JPOsawa/ronin-ui/issues"
   }
 }

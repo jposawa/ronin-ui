@@ -95,7 +95,7 @@ export const PressedAndUnpressed: Story = {
 }
 
 export const Disabled: Story = {
-  args: { isDisabled: true },
+  args: { disabled: true },
   render: (args) => (
     <div className="storyRow" data-gap="tight">
       <Chip {...args} label="off" isActive={false} />

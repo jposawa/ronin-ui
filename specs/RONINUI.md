@@ -163,6 +163,115 @@ differently. dhsw also uses the label standalone today.
 It is a judgement call rather than an obvious one: the cost is two entries in the public API
 where one would cover the common case.
 
+### No `fragments/` folder — `Card` is a component
+
+Proposed as a home for composed components. Declined.
+
+`fragments/` in the app specs means **business-aware** composed UI. A library has no business
+by rule 4, so the category cannot exist here — and "composed" is not a category on its own:
+`Modal` composes a header, a body and a footer, and lives in `components/` like everything else.
+Adding the folder would import a concept that does not translate and invite someone to fill it.
+
+`Card` was the motivating example and is built, in `components/`. The reticence behind the
+question — that a card component steers the consumer's layout — is answered by making it
+**slots, not layout**: the card owns the surface, each band's padding and the rules between
+them; what goes in the body is arranged entirely by the consumer. Two stories put a stack of
+fields and a row of badges in the same card to make that concrete.
+
+### `Tabs`, `Collapse`, `Drawer`
+
+Requested 2026-09-07.
+
+**Data props, not compound children.** `<Tabs.List>` / `<Tabs.Tab>` needs a context between the
+pieces, `React.Children` parsing that fails unhelpfully when they are nested wrong, and implicit
+ids. An array of items types the `id`, needs no context, and matches how tabs are actually
+built: the one real usage across these projects (`fantraveller/src/fragments/CharacterTabs`)
+generated mantine's compound markup from a constants map with two `.map()` calls — the compound
+API was boilerplate wrapped around data.
+
+The cost is legibility for hand-written static tabs. Accepted, because the real case was data.
+
+#### `Collapse`'s header: a button that shares the row, not a clickable container
+
+The `<button>` trigger does restrict what fits in the header — `<button>` cannot contain
+interactive content, so a link or a second button inside `title` is invalid markup.
+
+Making the whole header a clickable container does **not** lift that. A `role="button"` element
+is barred from holding focusable children by the same rule, and it gives up everything the
+native element provides: Space and Enter, `:focus-visible`, `disabled`, form participation.
+
+The fix is that the button does not occupy the row. `Collapse` renders a header row containing
+the heading-wrapped trigger, which grows to fill it, and an optional `actions` slot as the
+trigger's **sibling** — where anything interactive is fair game.
+
+`detail` stays *inside* the trigger, because a count or a status reads as part of the control's
+name ("Notifications, 3 unset"). Interactive content goes in `actions`. One extra prop, no
+compound components, no context.
+
+#### No `Accordion` — a container that owns only a loop does not earn a place
+
+One was written and then removed. Measured against a `.map()` over `Collapse`, it added the gap
+between items and the `isSingleOpen` rule, and that rule is one line
+(`isOpen={openId === panel.id}`).
+
+That has to square with the argument for `Tabs` above, which chose a data API *because* the real
+usage was a loop. The line between them:
+
+> A container component earns its place when it owns behaviour its children cannot — not when
+> it owns a loop.
+
+`Tabs` owns roving focus, the keyboard pattern and the `aria-controls` / `aria-labelledby`
+pairing between each tab and its panel; none of that can be reasonably hand-rolled per item.
+`Collapse` already carries every bit of its own accessibility wiring, and ARIA requires no
+coordination between accordion headers, so the wrapper had nothing left to own.
+
+Both patterns live on as stories — `Collapse/Grouped` and `Collapse/OneOpenAtATime` — so the
+knowledge is kept without the API surface.
+
+**Named `Tabs`, not `TabsSection`.** The section-ness is composition:
+`<Section title="…"><Tabs …/></Section>`. Standard names are more discoverable than bespoke ones.
+
+**Arrows and dots are pointer affordances.** They repeat what the tab list already offers, so
+they carry `aria-hidden` and are not focusable. A keyboard or screen-reader user moves with the
+arrow keys inside the list — the WAI-ARIA tabs pattern — and would otherwise meet the same tabs
+announced twice, with extra tab stops around a widget designed to have one.
+
+**`Collapse` is a button with `aria-expanded`, not `<details>`.** `<details>` owns its open
+state and toggles before React hears about it, so a controlled version fights the element every
+render. The cost is find-in-page: a browser can reveal collapsed `<details>` content while
+searching, and cannot do that here.
+
+**`Drawer` is a sibling of `Modal`, not a variant.** Both are the native `<dialog>`; everything
+that differs between them is placement. `side` is logical (`start` / `end` / `top` / `bottom`)
+so it follows the writing direction.
+
+#### What the survey of `../` actually found
+
+Corrected from a first pass that searched too narrowly and reported the wrong thing:
+
+- **`fantraveller` has no custom collapse.** The nearest thing is a utility class on the header,
+  `.hideHeader { max-height: 0; padding: 0; overflow: hidden }` — hiding, not a component.
+- **`dhsw/src/fragments/StatBlock` is the real custom disclosure.** It has `aria-expanded`, but
+  the expanded content lives *inside* the `<button>` — so the whole panel folds into the
+  button's accessible name, and anything interactive in there ends up nested in a button. There
+  is no `aria-controls`, so nothing says what is being expanded. `Collapse` separates the two,
+  and a test asserts the separation.
+- **`ficha-pet/src/pages/PetList`** hand-rolls an accordion with a `▲`/`▼` glyph and neither
+  attribute.
+
+### Tests — contract only
+
+Vitest, Testing Library, jsdom. 36 tests across 7 files, covering what fails silently: roles,
+accessible names, state attributes, callback wiring from pointer and keyboard, prop
+pass-through, and landmarks not added by accident. No snapshots, no style assertions. Rules in
+`STANDARDS.md`.
+
+Two of them earned their keep on the first run:
+
+- `Card`'s `<header>` computed as a `banner` landmark, contradicting the scoping rule this file
+  had asserted was safe. The bands became `<div>`s.
+- The `Chip` keyboard test caught its own bug, not the component's, which is the ordinary case.
+
 ### `Badge` and `Chip` are two components, not one
 
 Read from the dhsw source, not assumed. They differ in element, semantics, and interaction:

@@ -24,7 +24,7 @@ type ModalTriggerProps = ModalProps & {
   /**
    * Receives the close callback, so footer actions can actually close the dialog. Passing a
    * plain `footer` node instead leaves those buttons with no way to reach the open state —
-   * which, under `isDismissible={false}`, traps the reader with no exit at all.
+   * which, under `isPersistent`, traps the reader with no exit at all.
    */
   renderFooter?: (closeModal: () => void) => React.ReactNode
   triggerLabel?: string
@@ -87,9 +87,9 @@ export const WithFooter: Story = {
  * The footer actions become the only way out, so they have to be wired — a dialog with no
  * working exit is a trap, not a confirmation.
  */
-export const NotDismissible: Story = {
+export const Persistent: Story = {
   args: {
-    isDismissible: false,
+    isPersistent: true,
     title: 'Delete this project?',
     children: 'This removes the project and everything in it. It cannot be undone.',
   },

@@ -3,46 +3,43 @@ import React from 'react'
 
 import { RONIN_SCOPE } from '../../constants'
 import type { BaseComponent } from '../../types'
-import styles from './Modal.module.css'
+import styles from './Drawer.module.css'
 
-export type ModalSize = 'sm' | 'md' | 'lg'
+/** Logical, not physical: `start` and `end` follow the writing direction. */
+export type DrawerSide = 'start' | 'end' | 'top' | 'bottom'
 
-export type ModalProps = BaseComponent & {
+export type DrawerProps = BaseComponent & {
   isOpen: boolean
   onClose: () => void
   title: string
   children: React.ReactNode
   footer?: React.ReactNode
-  size?: ModalSize
-  /**
-   * Escape and a backdrop click stop closing the dialog, and the close button goes away with
-   * them — for a decision the reader has to make explicitly. The footer actions become the
-   * only way out, so they have to be wired.
-   */
+  side?: DrawerSide
+  /** Escape and a backdrop click stop closing it, and the close button goes away with them. */
   isPersistent?: boolean
-  /** Accessible name of the close button. English default; the library ships no UI copy. */
   closeLabel?: string
 }
 
 /**
- * Built on the native `<dialog>` element, which is why there is so little code here: focus
- * trapping, Escape, returning focus to the trigger on close, marking the rest of the page
- * inert, and rendering above every stacking context all come from the browser.
+ * A panel pinned to one edge of the viewport.
  *
- * A hand-rolled modal has to reimplement each of those, and usually reimplements one wrong.
+ * The same native `<dialog>` as `Modal`, for the same reasons — focus trapping, Escape,
+ * returning focus to the trigger, an inert page behind and the top layer all come from the
+ * browser. Only the position differs, which is why this is a sibling component rather than a
+ * `Modal` variant: everything visible about it is the placement.
  */
-export const Modal = ({
+export const Drawer = ({
   isOpen,
   onClose,
   title,
   children,
   footer,
-  size = 'md',
+  side = 'end',
   isPersistent = false,
-  closeLabel = 'Close dialog',
+  closeLabel = 'Close drawer',
   className,
   style,
-}: ModalProps) => {
+}: DrawerProps) => {
   const dialogRef = React.useRef<HTMLDialogElement>(null)
   const titleId = React.useId()
 
@@ -62,11 +59,7 @@ export const Modal = ({
     }
   }, [isOpen])
 
-  /**
-   * `cancel` fires on Escape. It is prevented and turned into an `onClose` call so the open
-   * state stays owned by the consumer — otherwise the dialog would close itself while the
-   * prop still said it was open, and the two would disagree until the next toggle.
-   */
+  /** Escape reports the intent; the consumer still owns whether it closes. */
   const handleDialogCancel = (event: React.SyntheticEvent<HTMLDialogElement>) => {
     event.preventDefault()
 
@@ -75,7 +68,6 @@ export const Modal = ({
     }
   }
 
-  /** A click that lands on the dialog element itself landed on the backdrop, not the panel. */
   const handleDialogClick = (event: React.MouseEvent<HTMLDialogElement>) => {
     if (!isPersistent && event.target === dialogRef.current) {
       onClose()
@@ -85,19 +77,14 @@ export const Modal = ({
   return (
     <dialog
       ref={dialogRef}
-      className={clsx(RONIN_SCOPE, styles.dialog, className)}
+      className={clsx(RONIN_SCOPE, styles.drawer, className)}
       style={style}
-      data-size={size}
+      data-side={side}
       aria-labelledby={titleId}
       onCancel={handleDialogCancel}
       onClick={handleDialogClick}
     >
-      {/**
-       * Plain `<div>` rather than `<header>` / `<footer>`: those map to the `banner` and
-       * `contentinfo` landmarks unless they sit inside sectioning content, and `<dialog>` is
-       * not sectioning content. A modal that quietly adds a second page banner is worse than
-       * one built from divs — the `<dialog>` already carries `role="dialog"` and its name.
-       */}
+      {/* Divs, not `<header>` / `<footer>` — see the note in Modal. */}
       <div className={styles.header}>
         <h2 className={styles.title} id={titleId}>
           {title}

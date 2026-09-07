@@ -1,0 +1,42 @@
+@layer ronin.components {
+  .card {
+    display: flex;
+    flex-direction: column;
+
+    background: var(--color-bg-elevated);
+    border-radius: var(--border-radius-lg);
+    /* Keeps a header's background and any image inside the corner radius. */
+    overflow: hidden;
+
+    color: var(--color-text);
+
+    &[data-variant='outlined'] {
+      border: var(--border-width) solid var(--color-border);
+    }
+
+    &[data-variant='elevated'] {
+      border: var(--border-width) solid transparent;
+      box-shadow: var(--shadow-md);
+    }
+
+    .header {
+      padding: var(--space-4) var(--space-5);
+      border-bottom: var(--border-width) solid var(--color-border);
+      color: var(--color-text-strong);
+    }
+
+    .body {
+      padding: var(--space-5);
+    }
+
+    .footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: var(--space-2);
+
+      padding: var(--space-4) var(--space-5);
+      border-top: var(--border-width) solid var(--color-border);
+    }
+  }
+}

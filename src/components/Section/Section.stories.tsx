@@ -9,12 +9,8 @@ const meta = {
   title: 'Components/Section',
   component: Section,
   args: {
-    title: 'Recent files',
-    headingLevel: 3,
+    title: <h3>Recent files</h3>,
     children: 'Anything can go here — this section holds a single string.',
-  },
-  argTypes: {
-    headingLevel: { control: 'inline-radio', options: [undefined, 2, 3, 4, 5, 6] },
   },
   decorators: [
     (Story) => (
@@ -58,7 +54,7 @@ export const WithoutTitle: Story = {
   args: { title: undefined },
   render: (args) => (
     <div className="storyStack" data-gap="loose">
-      <Section title="Notifications" headingLevel={3} detail={<Badge intent="warning">3</Badge>}>
+      <Section title={<h3>Notifications</h3>} detail={<Badge intent="warning">3</Badge>}>
         <Input label="Reply-to address" value="" onValueChange={() => {}} type="email" />
       </Section>
 
@@ -81,11 +77,11 @@ export const WithoutTitle: Story = {
 export const StackedSections: Story = {
   render: () => (
     <div className="storyStack" data-gap="loose">
-      <Section title="Account" headingLevel={2}>
+      <Section title={<h2>Account</h2>}>
         <Input label="Display name" value="Ada Lovelace" onValueChange={() => {}} />
       </Section>
 
-      <Section title="Workspace" headingLevel={2} detail="2 members">
+      <Section title={<h2>Workspace</h2>} detail="2 members">
         <Input label="Workspace name" value="Analytical Engine" onValueChange={() => {}} />
       </Section>
     </div>

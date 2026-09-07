@@ -11,7 +11,7 @@ const meta = {
     children: 'Notifications',
   },
   argTypes: {
-    headingLevel: { control: 'inline-radio', options: [undefined, 2, 3, 4, 5, 6] },
+    as: { control: 'inline-radio', options: [undefined, 'h2', 'h3', 'h4', 'h5', 'h6'] },
   },
   decorators: [
     (Story) => (
@@ -34,18 +34,20 @@ type Story = StoryObj<typeof meta>
 export const Playground: Story = {}
 
 /**
- * `headingLevel` renders a real `<h2>`…`<h6>` and puts the label in the document outline.
+ * `as` renders the label as a real heading, which puts it in the document outline.
  * Omitted, it renders a `<span>` — the right call when the section already has a heading,
  * because a wrong level in the outline is worse than no heading at all.
  */
 export const AsHeading: Story = {
-  args: { headingLevel: 2 },
   render: (args) => (
     <div className="storyStack">
-      <SectionLabel {...args}>Account</SectionLabel>
-      <SectionLabel {...args} headingLevel={3}>
-        Email preferences
+      <SectionLabel {...args}>
+        <h2>Account</h2>
       </SectionLabel>
+      <SectionLabel {...args}>
+        <h3>Email preferences</h3>
+      </SectionLabel>
+      <SectionLabel {...args}>Plain text — no heading</SectionLabel>
     </div>
   ),
 }

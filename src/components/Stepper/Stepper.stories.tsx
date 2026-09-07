@@ -71,7 +71,7 @@ export const AtBounds: Story = {
 export const InsideASection: Story = {
   render: (args) => (
     <div className="storyPage">
-      <Section title="Booking" headingLevel={3}>
+      <Section title={<h3>Booking</h3>}>
         <div className="storyRow">
           <BoundedStepper {...args} label="adults" value={2} minimum={1} />
           <BoundedStepper {...args} label="children" value={0} />

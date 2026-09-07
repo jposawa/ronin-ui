@@ -1,0 +1,206 @@
+@layer ronin.components {
+  .tabs {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+
+    .tabBar {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+
+    .tabList {
+      display: flex;
+      gap: var(--space-1);
+
+      /* The list scrolls rather than wrapping: a tab bar that reflows to two rows moves every
+       * tab under the pointer as the selection changes. */
+      overflow-x: auto;
+      scrollbar-width: none;
+      flex-grow: 1;
+    }
+
+    .tabList::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab {
+      min-height: var(--size-touch-target);
+      padding: 0.5em 1em;
+      white-space: nowrap;
+
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
+
+      color: var(--color-text-muted);
+      font-family: inherit;
+      font-size: var(--text-sm);
+      font-weight: 600;
+
+      cursor: pointer;
+      transition:
+        color var(--duration-fast) var(--easing-standard),
+        border-color var(--duration-fast) var(--easing-standard);
+
+      &:hover:not(:disabled) {
+        color: var(--color-text-strong);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: -2px;
+      }
+
+      &:disabled {
+        color: var(--color-text-disabled);
+        cursor: not-allowed;
+      }
+
+      /**
+       * The selected tab is styled from `aria-selected`, the attribute that already carries
+       * the state — never a second class mirroring it.
+       *
+       * It is marked by weight and an underline as well as colour, so the selection survives
+       * greyscale and colour blindness.
+       */
+      &[aria-selected='true'] {
+        border-bottom-color: var(--color-primary);
+        color: var(--color-primary);
+      }
+    }
+
+    .arrow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      width: var(--size-touch-target);
+      height: var(--size-touch-target);
+
+      background: transparent;
+      border: none;
+      border-radius: var(--border-radius-pill);
+
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition:
+        background-color var(--duration-fast) var(--easing-standard),
+        color var(--duration-fast) var(--easing-standard);
+
+      &:hover:not(:disabled) {
+        background: var(--color-primary-bg);
+        color: var(--color-primary);
+      }
+
+      &:disabled {
+        color: var(--color-text-disabled);
+        cursor: not-allowed;
+      }
+    }
+
+    /* Drawn, like the Stepper's signs: a chevron glyph sits differently in every font. */
+    .arrowIcon {
+      width: 0.5rem;
+      height: 0.5rem;
+      border-top: 2px solid currentcolor;
+      border-right: 2px solid currentcolor;
+    }
+
+    [data-direction='previous'] .arrowIcon {
+      transform: rotate(-135deg);
+      margin-left: 0.15rem;
+    }
+
+    [data-direction='next'] .arrowIcon {
+      transform: rotate(45deg);
+      margin-right: 0.15rem;
+    }
+
+    .panel {
+      min-width: 0;
+
+      &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+      }
+    }
+
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-2);
+    }
+
+    .dot {
+      width: 0.5rem;
+      height: 0.5rem;
+      padding: 0;
+
+      background: var(--color-border);
+      border: none;
+      border-radius: var(--border-radius-pill);
+
+      cursor: pointer;
+      transition: background-color var(--duration-fast) var(--easing-standard);
+
+      &[data-active] {
+        background: var(--color-primary);
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.4;
+      }
+    }
+
+    /**
+     * Vertical: the bar becomes a column beside the panel, and the selected marker moves from
+     * the bottom edge to the leading one.
+     */
+    &[data-orientation='vertical'] {
+      flex-direction: row;
+      align-items: flex-start;
+
+      .tabBar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .tabList {
+        flex-direction: column;
+        overflow-x: visible;
+      }
+
+      .tab {
+        text-align: start;
+        border-bottom: none;
+        border-inline-start: 2px solid transparent;
+        border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+
+        &[aria-selected='true'] {
+          border-inline-start-color: var(--color-primary);
+        }
+      }
+
+      .panel {
+        flex-grow: 1;
+      }
+
+      .dots {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tab,
+      .arrow,
+      .dot {
+        transition: none;
+      }
+    }
+  }
+}
