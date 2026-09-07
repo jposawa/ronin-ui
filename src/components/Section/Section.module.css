@@ -1,0 +1,11 @@
+@layer ronin.components {
+  /**
+   * A stack, and nothing more. `gap` is internal spacing, which a component may own; margin
+   * and width are not, and are left to whatever contains the section.
+   */
+  .section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+}

@@ -1,0 +1,85 @@
+@layer ronin.components {
+  .chip {
+    --chip-resolved: var(--chip-color, var(--chip-intent));
+
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+
+    min-height: var(--size-touch-target);
+    padding: 0.35em 0.9em;
+
+    background: transparent;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--border-radius-pill);
+
+    color: var(--color-text);
+    font-family: inherit;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    white-space: nowrap;
+
+    cursor: pointer;
+    transition:
+      background-color var(--duration-fast) var(--easing-standard),
+      border-color var(--duration-fast) var(--easing-standard),
+      color var(--duration-fast) var(--easing-standard);
+
+    &[data-intent='primary'] {
+      --chip-intent: var(--color-primary);
+    }
+
+    &[data-intent='secondary'] {
+      --chip-intent: var(--color-secondary);
+    }
+
+    &[data-intent='danger'] {
+      --chip-intent: var(--color-danger);
+    }
+
+    &[data-intent='warning'] {
+      --chip-intent: var(--color-warning);
+    }
+
+    &[data-intent='success'] {
+      --chip-intent: var(--color-success);
+    }
+
+    &[data-intent='neutral'] {
+      --chip-intent: var(--color-neutral);
+    }
+
+    /**
+     * The pressed state is read straight off `aria-pressed` rather than a second class or a
+     * data attribute mirroring it. One source of truth, and a state that cannot drift out of
+     * sync with what a screen reader announces.
+     *
+     * It must not rest on colour alone — colour blindness and greyscale printing both erase
+     * that — so the fill and the border weight carry it too.
+     */
+    &[aria-pressed='true'] {
+      background: color-mix(in srgb, var(--chip-resolved) 16%, transparent);
+      border-color: var(--chip-resolved);
+      color: var(--chip-resolved);
+    }
+
+    &:hover:not(:disabled) {
+      border-color: var(--chip-resolved);
+      color: var(--chip-resolved);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--chip-resolved);
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+}

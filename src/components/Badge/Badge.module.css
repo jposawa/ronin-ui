@@ -1,0 +1,74 @@
+@layer ronin.components {
+  /**
+   * `--badge-color` is the per-instance override the `color` prop writes. Every rule reads it
+   * with the intent token as the fallback, so omitting the prop changes nothing.
+   */
+  .badge {
+    --badge-resolved: var(--badge-color, var(--badge-intent));
+
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+
+    padding: 0.35em 0.7em;
+    border: var(--border-width) solid transparent;
+    border-radius: var(--border-radius-pill);
+
+    font-size: 0.85em;
+    font-weight: 600;
+    white-space: nowrap;
+
+    /**
+     * No `line-height` here on purpose. Inheriting is what the property is for: a badge sitting
+     * in running copy follows the rhythm of that copy, and a consumer who set the leading meant
+     * to set it. An earlier version declared `1` to keep the pill a fixed size — which fought
+     * the consumer's typography to solve a problem they had not reported.
+     */
+
+    &[data-intent='primary'] {
+      --badge-intent: var(--color-primary);
+      --badge-intent-border: var(--color-primary-border);
+    }
+
+    &[data-intent='secondary'] {
+      --badge-intent: var(--color-secondary);
+      --badge-intent-border: var(--color-secondary-border);
+    }
+
+    &[data-intent='danger'] {
+      --badge-intent: var(--color-danger);
+      --badge-intent-border: var(--color-danger-border);
+    }
+
+    &[data-intent='warning'] {
+      --badge-intent: var(--color-warning);
+      --badge-intent-border: var(--color-warning-border);
+    }
+
+    &[data-intent='success'] {
+      --badge-intent: var(--color-success);
+      --badge-intent-border: var(--color-success-border);
+    }
+
+    &[data-intent='neutral'] {
+      --badge-intent: var(--color-neutral);
+      --badge-intent-border: var(--color-neutral-border);
+    }
+
+    &[data-variant='filled'] {
+      background: var(--badge-resolved);
+      color: var(--color-on-accent);
+    }
+
+    &[data-variant='outline'] {
+      background: transparent;
+      border-color: var(--badge-color, var(--badge-intent-border));
+      color: var(--badge-resolved);
+    }
+
+    &[data-variant='subtle'] {
+      background: color-mix(in srgb, var(--badge-resolved) 12%, transparent);
+      color: var(--badge-resolved);
+    }
+  }
+}

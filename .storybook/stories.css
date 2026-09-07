@@ -1,0 +1,107 @@
+/**
+ * Layout helpers for the stories.
+ *
+ * Stories are the most-read code in a component library, so they should not teach inline
+ * styling. These are plain classes on a plain stylesheet — which is also roughly what a
+ * consumer's own app CSS looks like, so the examples read like real usage.
+ *
+ * Not shipped: this file is imported by `.storybook/preview.tsx` only, never by `src/index.ts`.
+ *
+ * Where a story genuinely needs a one-off value — three containers at three widths — it passes
+ * a CSS variable through `style`, which is the one use of inline style the standards allow.
+ */
+
+.storyStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.storyStack[data-gap='tight'] {
+  gap: var(--space-2);
+}
+
+.storyStack[data-gap='loose'] {
+  gap: var(--space-6);
+}
+
+.storyRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.storyRow[data-gap='tight'] {
+  gap: var(--space-2);
+}
+
+.storyRow[data-align='center'] {
+  justify-content: center;
+  padding: var(--space-7);
+}
+
+/* A realistic form column. A field with no container fills the canvas, which says nothing
+ * about how it looks in an app. */
+.storyForm {
+  max-width: 22rem;
+}
+
+.storyPage {
+  max-width: 30rem;
+}
+
+.storyProse {
+  max-width: 46ch;
+  color: var(--color-text);
+}
+
+.storyCaption {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.storyItem {
+  color: var(--color-text-strong);
+}
+
+.storyLog {
+  display: block;
+  min-height: 8rem;
+  padding: var(--space-3) var(--space-4);
+
+  background: var(--color-bg-elevated);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--border-radius-md);
+
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+/* A box that clips its overflow, to show a tooltip escaping it. */
+.storyClip {
+  width: 18rem;
+  height: 9rem;
+  padding: var(--space-3);
+  overflow: auto;
+
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--border-radius-md);
+}
+
+/* Width supplied per instance through a variable — see the note at the top. */
+.storyWidth {
+  width: var(--story-width);
+}
+
+/* The canvas the theme decorator paints. */
+.storyCanvas {
+  min-height: 100svh;
+  padding: var(--space-6);
+
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}

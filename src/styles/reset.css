@@ -1,0 +1,42 @@
+/**
+ * The only reset RoninUI ships, and it is scoped rather than global.
+ *
+ * Every element the library renders carries `ronin-scope`, so these rules reach the library's
+ * own boxes and nothing else. Importing the package does not change `box-sizing` on the
+ * consumer's page — which a bare `*` rule would, even inside a layer.
+ *
+ * `border-box` on the root and `inherit` below it is the classic form on purpose: a consumer
+ * who sets `content-box` on their own wrapper inside a `Modal` has it propagate normally,
+ * instead of fighting a hard-coded value on every descendant.
+ *
+ * Why this exists at all: `box-sizing` is not inherited by default, so `width: 100%` plus
+ * padding plus a border overflows its container. Declaring it per class worked until a class
+ * was added without it — and the overflow then surfaced far from its cause.
+ */
+
+@layer ronin.reset {
+  /**
+   * Margin and padding are zeroed on the library's own roots. Several of them are elements the
+   * user agent gives margins to — a heading from `SectionLabel`, a `<dialog>`, a `<p>` — and
+   * relying on each component to remember `margin: 0` is the same fragile per-class approach
+   * that let a missing `box-sizing` through.
+   */
+  .ronin-scope {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  /**
+   * Descendants get `box-sizing` and nothing else.
+   *
+   * Zeroing margin and padding under `.ronin-scope *` would strip them from a consumer's own
+   * paragraphs and lists the moment those were placed inside a `Modal` or a `Section` — the
+   * library restyling content it does not own. Spacing there is a content decision.
+   */
+  .ronin-scope *,
+  .ronin-scope *::before,
+  .ronin-scope *::after {
+    box-sizing: inherit;
+  }
+}

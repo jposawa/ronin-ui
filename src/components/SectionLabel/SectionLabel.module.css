@@ -1,0 +1,27 @@
+@layer ronin.components {
+  /**
+   * No divider line, and no outer margin. Both are the container's call — see the
+   * container-driven layout rule in STANDARDS.md.
+   */
+  .sectionLabel {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+
+    /* No `margin: 0` — the scoped reset already zeroes it on every component root, which is
+     * what makes the heading elements safe to render here. */
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+
+    .detail {
+      /* Pushed to the end of the line, whatever the label's length. */
+      margin-left: auto;
+      font-weight: 600;
+      letter-spacing: var(--tracking-wide);
+      text-transform: none;
+    }
+  }
+}

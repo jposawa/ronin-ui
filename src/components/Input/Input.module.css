@@ -1,0 +1,73 @@
+@layer ronin.components {
+  /**
+   * The field owns its internal rhythm only. It sets no outer margin and no width — the
+   * consumer's container decides how much room it gets.
+   */
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+
+    .label {
+      color: var(--color-text-strong);
+      font-size: var(--text-sm);
+      font-weight: 600;
+    }
+
+    .input {
+      width: 100%;
+      min-height: var(--size-touch-target);
+      padding: 0.5em 0.75em;
+
+      background: var(--color-bg-elevated);
+      border: var(--border-width) solid var(--color-border);
+      border-radius: var(--border-radius-md);
+
+      color: var(--color-text-strong);
+      font-family: inherit;
+      /* 16px floor — anything smaller makes iOS zoom the page on focus. */
+      font-size: var(--text-md);
+
+      transition: border-color var(--duration-fast) var(--easing-standard);
+
+      &::placeholder {
+        color: var(--color-text-muted);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+      }
+
+      &[aria-invalid] {
+        border-color: var(--color-danger);
+
+        &:focus-visible {
+          outline-color: var(--color-danger);
+        }
+      }
+
+      &:disabled {
+        background: var(--color-surface);
+        color: var(--color-text-disabled);
+        cursor: not-allowed;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+      }
+    }
+
+    .message {
+      font-size: var(--text-sm);
+
+      &[data-tone='hint'] {
+        color: var(--color-text-muted);
+      }
+
+      &[data-tone='error'] {
+        color: var(--color-danger);
+      }
+    }
+  }
+}

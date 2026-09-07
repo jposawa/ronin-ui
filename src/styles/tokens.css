@@ -1,0 +1,312 @@
+/**
+ * RoninUI design tokens — "Celestial Night" default palette.
+ *
+ * The library defines token NAMES and sensible DEFAULTS. The consuming app owns the final
+ * values — redefine any of them in unlayered CSS and it wins, whatever the import order.
+ *
+ * Theme selector: `data-ronin-theme="light" | "dark" | "auto"` on any element.
+ * With no attribute anywhere, the defaults below follow `prefers-color-scheme`.
+ *
+ * Every foreground/background pair below was checked against WCAG AA (4.5:1 for text,
+ * including each accent on both surfaces and `--color-on-accent` on each accent fill).
+ * Changing a hex here means re-running that check.
+ */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * @property registrations
+ *
+ * Deliberately outside the cascade layer: registration is global and does not
+ * cascade, so a layer would buy nothing and only obscure that fact.
+ *
+ * Only the BASE colours are registered. Derived tints (`-bg`, `-border`) are built with
+ * color-mix() so that overriding one base token carries through to its tints.
+ * `initial-value` is always the light-theme value.
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+@property --color-bg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #f8f6ee;
+}
+@property --color-bg-elevated {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ffffff;
+}
+@property --color-surface {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #efeadc;
+}
+@property --color-border {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #d2c7ac;
+}
+@property --color-text {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #3b4560;
+}
+@property --color-text-strong {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #0a1026;
+}
+@property --color-text-muted {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #5e6880;
+}
+@property --color-text-disabled {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #a7aec0;
+}
+@property --color-primary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #254a7a;
+}
+@property --color-secondary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #7f6329;
+}
+@property --color-success {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #2a704a;
+}
+@property --color-warning {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #98511a;
+}
+@property --color-danger {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #c1181e;
+}
+@property --color-info {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #0f6e80;
+}
+@property --color-neutral {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #5a6580;
+}
+@property --color-on-accent {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #f8f6ee;
+}
+@property --color-overlay {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: rgba(10, 16, 38, 0.5);
+}
+@property --color-shimmer {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: rgba(10, 16, 38, 0.08);
+}
+
+@layer ronin.tokens {
+  /* ───────────────────────────────────────────────────────────────────────────
+   * Non-theming tokens — identical in every theme.
+   * ─────────────────────────────────────────────────────────────────────────── */
+
+  :root {
+    /* — spacing — */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.5rem;
+    --space-6: 2rem;
+    --space-7: 3rem;
+    --space-8: 4rem;
+
+    /* — typography — */
+    --font-sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, 'Cascadia Code', monospace;
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-md: 1rem;
+    --text-lg: 1.25rem;
+    --text-xl: 1.75rem;
+    --text-2xl: 2.5rem;
+    --text-3xl: 3.5rem;
+
+    /* — letter spacing —
+     * In `em` so tracking stays proportional to the size it is applied at.
+     */
+    --tracking-tight: -0.015em;
+    --tracking-normal: 0;
+    --tracking-wide: 0.05em;
+    --tracking-wider: 0.12em;
+    --tracking-widest: 0.24em;
+
+    /* — borders — */
+    --border-width: 1px;
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 16px;
+    --border-radius-pill: 999px;
+
+    /* — stacking — */
+    --z-dropdown: 100;
+    --z-overlay: 200;
+    --z-modal: 300;
+    --z-tooltip: 350;
+    --z-toast: 400;
+
+    /* — motion — */
+    --duration-fast: 150ms;
+    --duration-medium: 250ms;
+    --easing-standard: cubic-bezier(0.2, 0, 0.2, 1);
+
+    /* — minimum touch target — */
+    --size-touch-target: 44px;
+
+    /* — derived tints —
+     * Built from the base colours above, so overriding `--color-primary` alone updates
+     * its background and border tints as well.
+     */
+    --color-primary-bg: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    --color-primary-border: color-mix(in srgb, var(--color-primary) 40%, transparent);
+    --color-secondary-bg: color-mix(in srgb, var(--color-secondary) 10%, transparent);
+    --color-secondary-border: color-mix(in srgb, var(--color-secondary) 40%, transparent);
+    --color-success-bg: color-mix(in srgb, var(--color-success) 10%, transparent);
+    --color-success-border: color-mix(in srgb, var(--color-success) 40%, transparent);
+    --color-warning-bg: color-mix(in srgb, var(--color-warning) 10%, transparent);
+    --color-warning-border: color-mix(in srgb, var(--color-warning) 40%, transparent);
+    --color-danger-bg: color-mix(in srgb, var(--color-danger) 10%, transparent);
+    --color-danger-border: color-mix(in srgb, var(--color-danger) 40%, transparent);
+    --color-info-bg: color-mix(in srgb, var(--color-info) 10%, transparent);
+    --color-info-border: color-mix(in srgb, var(--color-info) 40%, transparent);
+    --color-neutral-bg: color-mix(in srgb, var(--color-neutral) 10%, transparent);
+    --color-neutral-border: color-mix(in srgb, var(--color-neutral) 40%, transparent);
+  }
+
+  /* ───────────────────────────────────────────────────────────────────────────
+   * Light — ivory paper and deep navy ink.
+   *
+   * `:where(:root)` carries zero specificity, so an explicit `data-ronin-theme`
+   * always wins — even applied to <html> itself.
+   * ─────────────────────────────────────────────────────────────────────────── */
+
+  :where(:root),
+  [data-ronin-theme='auto'],
+  [data-ronin-theme='light'] {
+    color-scheme: light;
+
+    --color-bg: #f8f6ee;
+    --color-bg-elevated: #ffffff;
+    --color-surface: #efeadc;
+    --color-border: #d2c7ac;
+
+    --color-text: #3b4560;
+    --color-text-strong: #0a1026;
+    --color-text-muted: #5e6880;
+    --color-text-disabled: #a7aec0;
+
+    --color-primary: #254a7a;
+    /* Gold has to drop a long way in luminance to hold 4.5:1 on paper —
+     * #d4b06a manages only 2.06:1 there. Same hue, different lightness. */
+    --color-secondary: #7f6329;
+    --color-success: #2a704a;
+    /* Red-orange rather than amber: amber sits 15° from the gold secondary and would read
+     * as it. This is the tightest pair in the palette — chroma separates them, not hue. */
+    --color-warning: #98511a;
+    --color-danger: #c1181e;
+    /* Teal rather than the conventional blue, which would be a sibling of the primary. */
+    --color-info: #0f6e80;
+    --color-neutral: #5a6580;
+
+    --color-on-accent: #f8f6ee;
+    --color-overlay: rgba(10, 16, 38, 0.5);
+    --color-shimmer: rgba(10, 16, 38, 0.08);
+
+    --shadow-sm: rgba(10, 16, 38, 0.08) 0 1px 3px 0;
+    --shadow-md:
+      rgba(10, 16, 38, 0.12) 0 4px 6px -2px, rgba(10, 16, 38, 0.06) 0 10px 15px -3px;
+    --shadow-lg:
+      rgba(10, 16, 38, 0.18) 0 20px 25px -5px, rgba(10, 16, 38, 0.1) 0 10px 10px -5px;
+  }
+
+  /* ───────────────────────────────────────────────────────────────────────────
+   * Dark — night sky and starlight gold.
+   * ─────────────────────────────────────────────────────────────────────────── */
+
+  @media (prefers-color-scheme: dark) {
+    :where(:root),
+    [data-ronin-theme='auto'] {
+      color-scheme: dark;
+
+      --color-bg: #0a1026;
+      --color-bg-elevated: #121b39;
+      --color-surface: #1b2749;
+      --color-border: #2a3866;
+
+      --color-text: #a8b6d1;
+      --color-text-strong: #f8f6ee;
+      --color-text-muted: #8c9bb8;
+      --color-text-disabled: #4c5878;
+
+      --color-primary: #7fa3cc;
+      --color-secondary: #d4b06a;
+      --color-success: #5cc08a;
+      --color-warning: #e8934a;
+      --color-danger: #ff5f63;
+      --color-info: #45c3de;
+      --color-neutral: #8a99b5;
+
+      /* Every accent here is light, so text on an accent fill has to be the night sky. */
+      --color-on-accent: #0a1026;
+      --color-overlay: rgba(5, 8, 19, 0.7);
+      --color-shimmer: rgba(248, 246, 238, 0.08);
+
+      --shadow-sm: rgba(0, 0, 0, 0.3) 0 1px 3px 0;
+      --shadow-md:
+        rgba(0, 0, 0, 0.45) 0 4px 6px -2px, rgba(0, 0, 0, 0.3) 0 10px 15px -3px;
+      --shadow-lg:
+        rgba(0, 0, 0, 0.55) 0 20px 25px -5px, rgba(0, 0, 0, 0.35) 0 10px 10px -5px;
+    }
+  }
+
+  [data-ronin-theme='dark'] {
+    color-scheme: dark;
+
+    --color-bg: #0a1026;
+    --color-bg-elevated: #121b39;
+    --color-surface: #1b2749;
+    --color-border: #2a3866;
+
+    --color-text: #a8b6d1;
+    --color-text-strong: #f8f6ee;
+    --color-text-muted: #8c9bb8;
+    --color-text-disabled: #4c5878;
+
+    --color-primary: #7fa3cc;
+    --color-secondary: #d4b06a;
+    --color-success: #5cc08a;
+    --color-warning: #e8934a;
+    --color-danger: #ff5f63;
+    --color-info: #45c3de;
+    --color-neutral: #8a99b5;
+
+    --color-on-accent: #0a1026;
+    --color-overlay: rgba(5, 8, 19, 0.7);
+    --color-shimmer: rgba(248, 246, 238, 0.08);
+
+    --shadow-sm: rgba(0, 0, 0, 0.3) 0 1px 3px 0;
+    --shadow-md:
+      rgba(0, 0, 0, 0.45) 0 4px 6px -2px, rgba(0, 0, 0, 0.3) 0 10px 15px -3px;
+    --shadow-lg:
+      rgba(0, 0, 0, 0.55) 0 20px 25px -5px, rgba(0, 0, 0, 0.35) 0 10px 10px -5px;
+  }
+}

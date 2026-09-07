@@ -1,0 +1,54 @@
+@layer ronin.components {
+  .avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--border-radius-pill);
+
+    color: var(--color-text-strong);
+    font-weight: 700;
+    line-height: 1;
+
+    /* Never let a flex parent squash it into an ellipse. */
+    flex-shrink: 0;
+
+    /**
+     * Each size sets the box and the `font-size` together, and the initials below read `1em`.
+     * That is what makes the type scale with the circle instead of inheriting whatever the
+     * surrounding copy happens to be — the bug that rendered every size at 6.4px.
+     */
+    &[data-size='sm'] {
+      width: 2rem;
+      height: 2rem;
+      font-size: 0.75rem;
+    }
+
+    &[data-size='md'] {
+      width: 3rem;
+      height: 3rem;
+      font-size: 1.125rem;
+    }
+
+    &[data-size='lg'] {
+      width: 4.5rem;
+      height: 4.5rem;
+      font-size: 1.625rem;
+    }
+
+    .image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .initials {
+      font-size: 1em;
+      letter-spacing: var(--tracking-wide);
+      user-select: none;
+    }
+  }
+}

@@ -1,0 +1,96 @@
+@layer ronin.components {
+  .stepper {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+
+    padding: var(--space-1);
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--border-radius-pill);
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      width: var(--size-touch-target);
+      height: var(--size-touch-target);
+
+      background: transparent;
+      border: var(--border-width) solid transparent;
+      border-radius: var(--border-radius-pill);
+
+      color: var(--color-text-strong);
+      cursor: pointer;
+      transition:
+        background-color var(--duration-fast) var(--easing-standard),
+        color var(--duration-fast) var(--easing-standard);
+
+      &:hover:not(:disabled) {
+        background: var(--color-primary-bg);
+        color: var(--color-primary);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: -2px;
+      }
+
+      &:disabled {
+        color: var(--color-text-disabled);
+        cursor: not-allowed;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+      }
+    }
+
+    /**
+     * The signs are drawn, not typed. A `−` glyph and a `+` glyph have different widths and
+     * sit at different heights inside their em box, so a text label lands visibly off-centre,
+     * and differently in every font a consumer might set. Two bars from `currentColor` centre
+     * exactly, at any size, in any typeface.
+     */
+    .icon {
+      position: relative;
+      display: block;
+      width: 0.75rem;
+      height: 0.75rem;
+
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        top: calc(50% - 1px);
+        left: 0;
+
+        width: 100%;
+        height: 2px;
+
+        background: currentColor;
+        border-radius: 1px;
+      }
+    }
+
+    /* The minus is the horizontal bar alone; the plus adds the same bar turned upright.
+     * Keyed off `.button` rather than the bare attribute so a consumer's own `data-direction`
+     * inside a stepper cannot match. */
+    .button[data-direction='decrease'] .icon::after {
+      display: none;
+    }
+
+    .button[data-direction='increase'] .icon::after {
+      transform: rotate(90deg);
+    }
+
+    .value {
+      min-width: 2.5ch;
+      color: var(--color-text-strong);
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      text-align: center;
+    }
+  }
+}

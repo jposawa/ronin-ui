@@ -1,0 +1,141 @@
+@layer ronin.components {
+  /**
+   * Variants and intents are `data-*` attributes rather than generated class names: the
+   * component needs no lookup map, the rules nest under one selector, and the state is
+   * readable in devtools — `data-variant="outline"` instead of a hashed class.
+   *
+   * They are not prefixed because the hashed module class already scopes them. Only
+   * `data-ronin-theme` needs a prefix, because it lives on an element the consumer owns.
+   */
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+
+    min-height: var(--size-touch-target);
+    padding: 0.6em 1.2em;
+
+    border: var(--border-width) solid transparent;
+    border-radius: var(--border-radius-md);
+
+    font-family: inherit;
+    font-size: var(--text-md);
+    font-weight: 600;
+
+    cursor: pointer;
+    transition:
+      background-color var(--duration-fast) var(--easing-standard),
+      border-color var(--duration-fast) var(--easing-standard),
+      color var(--duration-fast) var(--easing-standard);
+
+    /* Each intent maps token families onto local variables; the variants below read those
+     * and never name a token directly. That is what keeps the two axes orthogonal. */
+    &[data-intent='primary'] {
+      --button-color: var(--color-primary);
+      --button-color-bg: var(--color-primary-bg);
+      --button-color-border: var(--color-primary-border);
+    }
+
+    &[data-intent='secondary'] {
+      --button-color: var(--color-secondary);
+      --button-color-bg: var(--color-secondary-bg);
+      --button-color-border: var(--color-secondary-border);
+    }
+
+    &[data-intent='danger'] {
+      --button-color: var(--color-danger);
+      --button-color-bg: var(--color-danger-bg);
+      --button-color-border: var(--color-danger-border);
+    }
+
+    &[data-intent='warning'] {
+      --button-color: var(--color-warning);
+      --button-color-bg: var(--color-warning-bg);
+      --button-color-border: var(--color-warning-border);
+    }
+
+    &[data-intent='success'] {
+      --button-color: var(--color-success);
+      --button-color-bg: var(--color-success-bg);
+      --button-color-border: var(--color-success-border);
+    }
+
+    &[data-intent='neutral'] {
+      --button-color: var(--color-neutral);
+      --button-color-bg: var(--color-neutral-bg);
+      --button-color-border: var(--color-neutral-border);
+    }
+
+    &[data-variant='filled'] {
+      background: var(--button-color);
+      color: var(--color-on-accent);
+
+      &:hover:not(:disabled) {
+        background: color-mix(in srgb, var(--button-color) 85%, var(--color-text-strong));
+      }
+    }
+
+    &[data-variant='outline'] {
+      background: transparent;
+      border-color: var(--button-color-border);
+      color: var(--button-color);
+
+      &:hover:not(:disabled) {
+        background: var(--button-color-bg);
+        border-color: var(--button-color);
+      }
+    }
+
+    /**
+     * `text` is the "link inside a sentence" case: it sits on the surrounding baseline and
+     * inherits the copy's font, so it drops the padding, the box, and the 44px floor the
+     * shared rule sets. The underline is what marks it clickable.
+     */
+    &[data-variant='text'] {
+      display: inline;
+      min-height: auto;
+      padding: 0;
+
+      background: transparent;
+      border: none;
+      border-radius: 0;
+
+      font: inherit;
+      color: var(--button-color);
+      text-decoration: underline;
+      text-decoration-color: transparent;
+      text-underline-offset: 0.2em;
+
+      transition: text-decoration-color var(--duration-fast) var(--easing-standard);
+
+      &:hover:not(:disabled),
+      &:focus-visible {
+        text-decoration-color: currentcolor;
+      }
+    }
+
+    /**
+     * No `:active` styling on purpose. A press effect is opinion, and it is opinion a consumer
+     * has to undo rather than opt into — so it belongs in the consuming app, not here.
+     */
+
+    &[data-full-width] {
+      width: 100%;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--button-color);
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+}

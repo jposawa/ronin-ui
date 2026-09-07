@@ -1,0 +1,42 @@
+@layer ronin.components {
+  /**
+   * The wrapper catches the bubbling hover and focus events, and is the element floating-ui
+   * measures against.
+   *
+   * NOT `display: contents`, tempting as it is: an element with no box has an empty
+   * `getBoundingClientRect()`, so the tooltip would be positioned against nothing.
+   *
+   * `inline-flex` hugs the trigger, so the visual result is the same for the buttons, links
+   * and icons a tooltip normally wraps. It is still a real box: wrapping a direct child of a
+   * flex or grid container moves the layout one level down. Wrap the child, not the item.
+   */
+  .trigger {
+    display: inline-flex;
+  }
+
+  .tooltip {
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* floating-ui supplies the two numbers; the placement itself stays in CSS. */
+    transform: translate(var(--tooltip-x, 0), var(--tooltip-y, 0));
+    z-index: var(--z-tooltip);
+
+    max-width: 22rem;
+    padding: var(--space-2) var(--space-3);
+
+    background: var(--color-text-strong);
+    border-radius: var(--border-radius-sm);
+    box-shadow: var(--shadow-md);
+
+    color: var(--color-bg);
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    line-height: 1.4;
+
+    /* The trigger owns the pointer; a tooltip that catches it would flicker on the edge. */
+    pointer-events: none;
+    /* Wrapping is fine, breaking a word in half is not. */
+    overflow-wrap: break-word;
+  }
+}
