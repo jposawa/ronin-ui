@@ -5,3 +5,6 @@ storybook-static
 *.log
 .DS_Store
 .vite
+
+# Editor and assistant settings are per-machine, not per-project.
+.vscode

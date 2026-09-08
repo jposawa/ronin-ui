@@ -85,25 +85,43 @@ and `isDisabled` on `Chip` and `Collapse` at the same time, so a consumer learne
 hit a type error with the other. The prefix convention above applies to library state —
 `isOpen`, `isActive`, `isFullWidth` — never to an attribute being passed straight through.
 
-### Polymorphic element props are `as`, or `<slot>As`
+### To choose a title's element, pass the element
 
-`as` when the prop changes the component's **own** root element; `<slot>As` when it changes an
-element the component renders **inside** itself.
+No `as`, no `titleAs`, no `headingLevel`. Write the tag in the title and the component puts it
+where it belongs.
 
 ```tsx
-<SectionLabel as="h3">        // the label is the element
-<Section titleAs="h2">        // the section renders a title inside itself
-<Collapse titleAs="h3">       // the heading wraps the trigger
+<SectionLabel><h2>Account</h2></SectionLabel>
+<Section title={<h2>Account</h2>}>
+<Collapse title={<h3>Advanced</h3>}>
+
+<Collapse title="Advanced">   // plain text — no heading, by design
 ```
 
-Values are tag names (`'h2'`…`'h6'`), not numbers. `headingLevel={3}` was the first attempt and
-reads as a magic prop — the level is a detail of the tag, and no library names it that way.
-Most either hardcode a level (Radix `h3`, Chakra `h2`) or render no heading at all (MUI, antd);
-none of those is right for a component that is sometimes a page section and sometimes a control
-inside a form.
+The mechanism is `isHeadingElement` in `src/helpers/heading.ts`: a title that is a bare
+`<h1>`…`<h6>` is **hoisted** — the tag becomes the wrapper, its children become the title's
+content, and its own attributes are forwarded. Anything else renders as content, unchanged.
 
-The shared union is `HeadingTag` in `src/types/heading.ts`, widened per component with whatever
-its non-heading default is (`'span'` for `SectionLabel`, `'div'` for `Collapse`).
+Hoisting is what makes passing the tag work rather than merely look like it works. `Collapse`
+puts its title inside a `<button>`, which accepts phrasing content only: a heading rendered
+there is invalid markup *and* is flattened into the button's accessible name, so the role is
+lost. `SectionLabel` defaults to a `<span>` and has the same problem. Both need the heading on
+the outside, which is exactly where hoisting puts it.
+
+Two rejected alternatives, both tried here first:
+
+- **`headingLevel={3}`** — accurate and unguessable. No library names a prop that way, so it
+  reads as magic to whoever has to remember it.
+- **`as` / `titleAs`** — the familiar polymorphic idiom, but two spellings for one idea across
+  three components, and still a prop to discover before the obvious thing works.
+
+The ecosystem is no help: Radix hardcodes `h3`, Chakra hardcodes `h2`, MUI and antd render no
+heading at all. Since every option is off the beaten path, the one that reads best at the call
+site wins.
+
+**Plain text means no heading, on purpose.** A collapse inside a form is not a section heading,
+and the right level depends on what surrounds the component — which it cannot see. A wrong
+level in the outline is worse than none.
 
 Callback props take `on` + noun + verb → `onValueChange`, `onClose`.
 

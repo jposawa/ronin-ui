@@ -5,30 +5,70 @@
     overflow: hidden;
 
     /**
-     * The header is the row; the trigger is only the part of it that toggles. Anything in
-     * `actions` sits beside the button rather than inside it — which is what makes an
-     * interactive header possible at all, since a `<button>` cannot contain another.
+     * The header is the row. The `<button>` holds only the title, because a button cannot
+     * contain another — so actions and the chevron are its siblings, and the button's hit area
+     * is stretched across the whole row by a pseudo-element instead.
+     *
+     * Order is title · actions · chevron, and the actions are raised above the hit area, so
+     * clicking them never toggles. Nothing needs `stopPropagation`: the click has no path to
+     * the trigger.
      */
     .header {
+      position: relative;
       display: flex;
       align-items: center;
+      gap: var(--space-2);
+      padding-inline-end: var(--space-4);
+
+      /* The header paints the hover, so it is the header that transitions. */
+      transition: background-color var(--duration-fast) var(--easing-standard);
     }
 
     .heading {
       margin: 0;
       font-size: inherit;
       font-weight: inherit;
-      /* The trigger takes the row; actions take only what they need. */
+      /* The title takes the row; actions and chevron take only what they need. */
       flex-grow: 1;
       min-width: 0;
     }
 
+    /* The whole row toggles, not just the words. */
+    .trigger::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+    }
+
     .actions {
+      position: relative;
+      z-index: 1;
+
       display: flex;
       align-items: center;
       gap: var(--space-1);
       flex-shrink: 0;
-      padding-inline-end: var(--space-3);
+    }
+
+    /**
+     * The focus ring belongs on the row, because the row is what is clickable — a ring drawn
+     * around the words alone would disagree with the hit area.
+     *
+     * `:has()` rather than `:focus-within`, which would also fire when an action is focused.
+     */
+    &:has(.trigger:focus-visible) .header {
+      outline: 2px solid var(--color-primary);
+      outline-offset: -2px;
+      border-radius: var(--border-radius-md);
+    }
+
+    /**
+     * Hover is painted on the header for the same reason: the stretched pseudo-element makes
+     * the whole row hover the trigger, so a background on the button alone would highlight a
+     * box smaller than what responds to the pointer.
+     */
+    &:has(.trigger:hover:not(:disabled)) .header {
+      background: var(--color-surface);
     }
 
     .trigger {
@@ -50,32 +90,31 @@
       text-align: start;
 
       cursor: pointer;
-      transition: background-color var(--duration-fast) var(--easing-standard);
 
-      &:hover:not(:disabled) {
-        background: var(--color-surface);
-      }
-
+      /* The ring is drawn on the header instead — see the rule above. */
       &:focus-visible {
-        outline: 2px solid var(--color-primary);
-        outline-offset: -2px;
+        outline: none;
       }
 
       &:disabled {
         color: var(--color-text-disabled);
         cursor: not-allowed;
       }
+    }
 
-      /**
-       * Styled from the attribute that already carries the state.
-       *
-       * The chevron is a square with its top and right borders drawn, so its apex points
-       * north-east before any rotation: 45° turns it east (closed), 135° turns it south
-       * (open). An earlier version used -135°, which points it west.
-       */
-      &[aria-expanded='true'] .icon {
-        transform: rotate(135deg);
-      }
+    /**
+     * Read from the attribute that already carries the state, even though the chevron is now
+     * the trigger's sibling rather than its child.
+     *
+     * The chevron is a square with its top and right borders drawn, so its apex points
+     * north-east before any rotation: 45° turns it east (closed), 135° turns it south (open).
+     */
+    &:has(.trigger[aria-expanded='true']) .icon {
+      transform: rotate(135deg);
+    }
+
+    &:has(.trigger:disabled) .icon {
+      color: var(--color-text-disabled);
     }
 
     .title {
@@ -93,6 +132,7 @@
       width: 0.5rem;
       height: 0.5rem;
       flex-shrink: 0;
+      color: var(--color-text-strong);
 
       border-top: 2px solid currentcolor;
       border-right: 2px solid currentcolor;
@@ -108,7 +148,7 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .trigger,
+      .header,
       .icon {
         transition: none;
       }

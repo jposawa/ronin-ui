@@ -10,9 +10,6 @@ const meta = {
   args: {
     children: 'Notifications',
   },
-  argTypes: {
-    as: { control: 'inline-radio', options: [undefined, 'h2', 'h3', 'h4', 'h5', 'h6'] },
-  },
   decorators: [
     (Story) => (
       <div className="storyPage">
@@ -34,9 +31,9 @@ type Story = StoryObj<typeof meta>
 export const Playground: Story = {}
 
 /**
- * `as` renders the label as a real heading, which puts it in the document outline.
- * Omitted, it renders a `<span>` — the right call when the section already has a heading,
- * because a wrong level in the outline is worse than no heading at all.
+ * A heading passed as `children` becomes the rendered element, which puts the label in the
+ * document outline. Plain text renders a `<span>` — the right call when the section already
+ * has a heading, because a wrong level in the outline is worse than no heading at all.
  */
 export const AsHeading: Story = {
   render: (args) => (

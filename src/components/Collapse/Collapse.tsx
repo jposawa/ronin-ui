@@ -42,6 +42,8 @@ export type CollapseProps = BaseComponent & {
   disabled?: boolean
 }
 
+const EMPTY_HEADING_PROPS: React.HTMLAttributes<HTMLHeadingElement> = {}
+
 /**
  * A disclosure: a trigger that shows and hides one region.
  *
@@ -72,15 +74,21 @@ export const Collapse = ({
   const heading = isHeadingElement(title) ? title : undefined
 
   /* Hoisted: the heading wraps the trigger, and its children become the trigger's label. */
-  const HeadingElement = heading?.type ?? 'div'
-  const triggerLabel = heading?.props?.children ?? title
+  const HeadingElement = heading ? heading.type : 'div'
+  const {
+    children: headingContent,
+    className: headingClassName,
+    ...headingAttributes
+  } = heading?.props ?? EMPTY_HEADING_PROPS
+
+  const triggerLabel = heading ? headingContent : title
 
   return (
     <div className={clsx(RONIN_SCOPE, styles.collapse, className)} style={style}>
       <div className={styles.header}>
         <HeadingElement
-          {...heading?.props}
-          className={clsx(styles.heading, heading?.props.className)}
+          {...headingAttributes}
+          className={clsx(styles.heading, headingClassName)}
         >
           <button
             type="button"
@@ -93,11 +101,17 @@ export const Collapse = ({
           >
             <span className={styles.title}>{triggerLabel}</span>
             {detail ? <span className={styles.detail}>{detail}</span> : null}
-            <span className={styles.icon} aria-hidden="true" />
           </button>
         </HeadingElement>
 
+        {/**
+         * Actions come before the chevron and sit above the trigger's stretched hit area, so a
+         * click on them never reaches it. No `stopPropagation` — they are not inside the
+         * button to begin with, which is also what keeps the markup valid.
+         */}
         {actions ? <div className={styles.actions}>{actions}</div> : null}
+
+        <span className={styles.icon} aria-hidden="true" />
       </div>
 
       {/* Stays in the DOM so `aria-controls` always points at something real. */}

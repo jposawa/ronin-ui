@@ -87,10 +87,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JPOsawa/ronin-ui.git"
+    "url": "git+https://github.com/jposawa/ronin-ui.git"
   },
-  "homepage": "https://github.com/JPOsawa/ronin-ui#readme",
+  "homepage": "https://github.com/jposawa/ronin-ui#readme",
   "bugs": {
-    "url": "https://github.com/JPOsawa/ronin-ui/issues"
+    "url": "https://github.com/jposawa/ronin-ui/issues"
   }
 }

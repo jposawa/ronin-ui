@@ -93,6 +93,29 @@ describe('Collapse', () => {
     expect(handleAction).toHaveBeenCalledTimes(1)
   })
 
+  /**
+   * The trigger's hit area is stretched across the whole header, so this is the guard that the
+   * actions stay above it. Nothing calls `stopPropagation` — the click has no path to the
+   * trigger, because the action is not inside it.
+   */
+  it('does not toggle when an action is clicked', async () => {
+    const handleToggle = vi.fn()
+    render(
+      <Collapse
+        title="Notifications"
+        isOpen={false}
+        onToggle={handleToggle}
+        actions={<button type="button">Clear</button>}
+      >
+        Body
+      </Collapse>,
+    )
+
+    await userEvent.click(screen.getByRole('button', { name: 'Clear' }))
+
+    expect(handleToggle).not.toHaveBeenCalled()
+  })
+
   it('reports the toggle rather than opening itself', async () => {
     const handleToggle = vi.fn()
     render(
@@ -131,5 +154,20 @@ describe('Collapse', () => {
     )
 
     expect(screen.getByRole('heading', { level: 3, name: 'Advanced' })).toBeInTheDocument()
+  })
+
+  it('keeps the hoisted heading on the outside of the trigger', () => {
+    render(
+      <Collapse title={<h3 id="advanced-heading">Advanced</h3>} isOpen={false} onToggle={() => {}}>
+        Body
+      </Collapse>,
+    )
+
+    const heading = screen.getByRole('heading', { level: 3 })
+    const trigger = screen.getByRole('button', { name: 'Advanced' })
+
+    /* The heading wraps the button, never the other way round — and its own attributes survive. */
+    expect(heading).toContainElement(trigger)
+    expect(heading).toHaveAttribute('id', 'advanced-heading')
   })
 })
