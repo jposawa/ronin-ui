@@ -529,17 +529,53 @@ copy is what allowed the drift in the first place.
 `#C1181E` light / `#FF5F63` dark — hue 358–359°, saturation 78% and 100%. Separation from
 `warning` improves from 23–24° to 28–29° as a side effect.
 
-### Palette presets — two attributes, not one compound value
+### Palette presets — one attribute, compound values
 
-Proposed as `data-ronin-theme="celestial"` / `"celestial-dark"`. Rejected as an encoding, adopted
-as an idea.
+**Settled 2026-09-08 by @jposawa, overruling the two-attribute design recorded below.**
 
-Rejected because it collapses two independent axes into one value — the same mistake as folding
-`intent` into `variant`, which this file already rejected once. It also destroys `auto`: there is
-nowhere for "this preset, following the OS" to live.
+Values are `<preset>`, `<preset>-dark` and `<preset>-auto`, all on `data-ronin-theme`:
 
-Adopted, because the inheritance instinct behind it is right. Dark should override only the
-deltas, not restate the palette. That works with two attributes and a compound selector:
+```css
+/* base — covers every variant of the preset */
+[data-ronin-theme^='luna'] { …the full light set… }
+
+/* dark restates only the deltas */
+[data-ronin-theme='luna-dark'] { …what changes… }
+
+@media (prefers-color-scheme: dark) {
+  [data-ronin-theme='luna-auto'] { …the same deltas… }
+}
+```
+
+The objection that sank the earlier proposal — that a compound value leaves nowhere for "this
+preset, following the OS" — is answered by `-auto` being a third value rather than a second
+attribute. With that gone, one attribute is simply less to learn, and the DRY win holds: the
+base applies to all three, so the dark block carries deltas only.
+
+Four presets ship, all opt-in: `luna` (blue-grey, no accent hue), `brass` (navy and a browner
+gold), `mint` and `cyan`. The last two are dark-first — `#27e9b5` reaches 1.57:1 on white and
+`#00c6e6` 2.05:1 — so their light themes drop to a deep teal of the same hue and are documented
+as the compromise they are.
+
+They are not in the main bundle. Each is a file under `dist/palettes/`, emitted by the same Vite
+plugin that copies `tokens.css`, and reachable through the `./palettes/*` export.
+
+`verify:contrast` now walks every palette file as well as the default: 39 pairs per theme, ten
+themes, 390 pairs. It parses the base block and merges the dark deltas over it, which is the
+only way to check what a `-dark` value actually resolves to. Writing the presets produced one
+real failure — `cyan` dark `neutral` on `surface` at 4.50:1, just under the floor.
+
+---
+
+#### The superseded design, kept for the reasoning
+
+Originally rejected as an encoding and adopted only as an idea:
+
+> It collapses two independent axes into one value — the same mistake as folding `intent` into
+> `variant`. It also destroys `auto`: there is nowhere for "this preset, following the OS".
+
+The inheritance instinct behind the proposal was right either way. With two attributes it would
+have been:
 
 ```css
 [data-ronin-palette='luna'] { /* the full set, light */ }

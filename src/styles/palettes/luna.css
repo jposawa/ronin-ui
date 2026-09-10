@@ -1,0 +1,112 @@
+/**
+ * Luna — night sky neutrals. Blue-greys with no accent hue of their own, for an interface that
+ * wants its colour to come from content rather than from chrome.
+ *
+ * Opt in by importing the file and naming the theme:
+ *
+ *   import '@jposawa/ronin-ui/palettes/luna.css'
+ *   <div data-ronin-theme="luna">        light
+ *   <div data-ronin-theme="luna-dark">   dark
+ *   <div data-ronin-theme="luna-auto">   follows prefers-color-scheme
+ *
+ * The base block covers all three values; the dark block restates only what changes.
+ *
+ * Verified by `pnpm verify:contrast` — 39 pairs per theme. Change a hex, re-run it.
+ */
+
+@layer ronin.tokens {
+  [data-ronin-theme^='luna'] {
+    color-scheme: light;
+
+    --color-bg: #eef1f5;
+    --color-bg-elevated: #ffffff;
+    --color-surface: #e3e8ef;
+    --color-border: #c3cdda;
+
+    --color-text: #3b4859;
+    --color-text-strong: #0b1020;
+    --color-text-muted: #505d72;
+    --color-text-disabled: #a6b0be;
+
+    /* No brand hue: the "accent" is the deepest blue-grey of the ramp. */
+    --color-primary: #35506e;
+    --color-secondary: #2a3a4f;
+    --color-success: #1f6b4f;
+    --color-warning: #8f511a;
+    --color-danger: #b3202a;
+    --color-info: #1d5580;
+    --color-neutral: #4e5a6b;
+
+    --color-on-accent: #ffffff;
+    --color-overlay: rgba(11, 16, 32, 0.5);
+    --color-shimmer: rgba(11, 16, 32, 0.08);
+
+    --shadow-sm: rgba(11, 16, 32, 0.08) 0 1px 3px 0;
+    --shadow-md:
+      rgba(11, 16, 32, 0.12) 0 4px 6px -2px, rgba(11, 16, 32, 0.06) 0 10px 15px -3px;
+    --shadow-lg:
+      rgba(11, 16, 32, 0.18) 0 20px 25px -5px, rgba(11, 16, 32, 0.1) 0 10px 10px -5px;
+  }
+
+  [data-ronin-theme='luna-dark'] {
+    color-scheme: dark;
+
+    --color-bg: #0b1020;
+    --color-bg-elevated: #13223d;
+    --color-surface: #1e2e48;
+    --color-border: #33415c;
+
+    --color-text: #a9b6c8;
+    --color-text-strong: #e9edf3;
+    --color-text-muted: #94a2b6;
+    --color-text-disabled: #4c5a70;
+
+    --color-primary: #9fb6d2;
+    --color-secondary: #c7ccd6;
+    --color-success: #62c39c;
+    --color-warning: #e2a263;
+    --color-danger: #f0838a;
+    --color-info: #7fb6de;
+    --color-neutral: #93a1b5;
+
+    --color-on-accent: #0b1020;
+    --color-overlay: rgba(4, 7, 16, 0.7);
+    --color-shimmer: rgba(233, 237, 243, 0.08);
+
+    --shadow-sm: rgba(0, 0, 0, 0.3) 0 1px 3px 0;
+    --shadow-md: rgba(0, 0, 0, 0.45) 0 4px 6px -2px, rgba(0, 0, 0, 0.3) 0 10px 15px -3px;
+    --shadow-lg: rgba(0, 0, 0, 0.55) 0 20px 25px -5px, rgba(0, 0, 0, 0.35) 0 10px 10px -5px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    [data-ronin-theme='luna-auto'] {
+      color-scheme: dark;
+
+      --color-bg: #0b1020;
+      --color-bg-elevated: #13223d;
+      --color-surface: #1e2e48;
+      --color-border: #33415c;
+
+      --color-text: #a9b6c8;
+      --color-text-strong: #e9edf3;
+      --color-text-muted: #94a2b6;
+      --color-text-disabled: #4c5a70;
+
+      --color-primary: #9fb6d2;
+      --color-secondary: #c7ccd6;
+      --color-success: #62c39c;
+      --color-warning: #e2a263;
+      --color-danger: #f0838a;
+      --color-info: #7fb6de;
+      --color-neutral: #93a1b5;
+
+      --color-on-accent: #0b1020;
+      --color-overlay: rgba(4, 7, 16, 0.7);
+      --color-shimmer: rgba(233, 237, 243, 0.08);
+
+      --shadow-sm: rgba(0, 0, 0, 0.3) 0 1px 3px 0;
+      --shadow-md: rgba(0, 0, 0, 0.45) 0 4px 6px -2px, rgba(0, 0, 0, 0.3) 0 10px 15px -3px;
+      --shadow-lg: rgba(0, 0, 0, 0.55) 0 20px 25px -5px, rgba(0, 0, 0, 0.35) 0 10px 10px -5px;
+    }
+  }
+}

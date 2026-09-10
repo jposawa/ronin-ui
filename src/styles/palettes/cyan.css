@@ -1,0 +1,110 @@
+/**
+ * Cyan — near-black indigo with an electric cyan accent.
+ *
+ *   import '@jposawa/ronin-ui/palettes/cyan.css'
+ *   <div data-ronin-theme="cyan">        light
+ *   <div data-ronin-theme="cyan-dark">   dark
+ *   <div data-ronin-theme="cyan-auto">   follows prefers-color-scheme
+ *
+ * **Designed dark-first**, like `mint`. `#00c6e6` reaches 2.05:1 on white, so the light theme
+ * drops to a deep teal-blue — same hue, readable, much less electric. Reach for `cyan-dark`
+ * rather than `cyan-auto` if the glow is the point.
+ *
+ * Verified by `pnpm verify:contrast` — 39 pairs per theme.
+ */
+
+@layer ronin.tokens {
+  [data-ronin-theme^='cyan'] {
+    color-scheme: light;
+
+    --color-bg: #f0f1f5;
+    --color-bg-elevated: #ffffff;
+    --color-surface: #e2e4ec;
+    --color-border: #c2c6d4;
+
+    --color-text: #3a4053;
+    --color-text-strong: #191e2b;
+    --color-text-muted: #545b70;
+    --color-text-disabled: #a6aab8;
+
+    --color-primary: #0a6072;
+    --color-secondary: #34405c;
+    --color-success: #1f6b4a;
+    --color-warning: #8d5018;
+    --color-danger: #b21f28;
+    --color-info: #1a5480;
+    --color-neutral: #4c5266;
+
+    --color-on-accent: #f0f1f5;
+    --color-overlay: rgba(25, 30, 43, 0.5);
+    --color-shimmer: rgba(25, 30, 43, 0.08);
+
+    --shadow-sm: rgba(25, 30, 43, 0.08) 0 1px 3px 0;
+    --shadow-md:
+      rgba(25, 30, 43, 0.12) 0 4px 6px -2px, rgba(25, 30, 43, 0.06) 0 10px 15px -3px;
+    --shadow-lg:
+      rgba(25, 30, 43, 0.18) 0 20px 25px -5px, rgba(25, 30, 43, 0.1) 0 10px 10px -5px;
+  }
+
+  [data-ronin-theme='cyan-dark'] {
+    color-scheme: dark;
+
+    --color-bg: #191e2b;
+    --color-bg-elevated: #212838;
+    --color-surface: #2a3346;
+    --color-border: #3d4759;
+
+    --color-text: #aab1c2;
+    --color-text-strong: #eef0f5;
+    --color-text-muted: #949cb0;
+    --color-text-disabled: #4f5870;
+
+    --color-primary: #00c6e6;
+    --color-secondary: #bfc0d1;
+    --color-success: #5ecf9b;
+    --color-warning: #e39c56;
+    --color-danger: #f0808a;
+    --color-info: #7cb5e0;
+    --color-neutral: #99a1b6;
+
+    --color-on-accent: #191e2b;
+    --color-overlay: rgba(9, 11, 17, 0.7);
+    --color-shimmer: rgba(238, 240, 245, 0.08);
+
+    --shadow-sm: rgba(0, 0, 0, 0.3) 0 1px 3px 0;
+    --shadow-md: rgba(0, 0, 0, 0.45) 0 4px 6px -2px, rgba(0, 0, 0, 0.3) 0 10px 15px -3px;
+    --shadow-lg: rgba(0, 0, 0, 0.55) 0 20px 25px -5px, rgba(0, 0, 0, 0.35) 0 10px 10px -5px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    [data-ronin-theme='cyan-auto'] {
+      color-scheme: dark;
+
+      --color-bg: #191e2b;
+      --color-bg-elevated: #212838;
+      --color-surface: #2a3346;
+      --color-border: #3d4759;
+
+      --color-text: #aab1c2;
+      --color-text-strong: #eef0f5;
+      --color-text-muted: #949cb0;
+      --color-text-disabled: #4f5870;
+
+      --color-primary: #00c6e6;
+      --color-secondary: #bfc0d1;
+      --color-success: #5ecf9b;
+      --color-warning: #e39c56;
+      --color-danger: #f0808a;
+      --color-info: #7cb5e0;
+      --color-neutral: #99a1b6;
+
+      --color-on-accent: #191e2b;
+      --color-overlay: rgba(9, 11, 17, 0.7);
+      --color-shimmer: rgba(238, 240, 245, 0.08);
+
+      --shadow-sm: rgba(0, 0, 0, 0.3) 0 1px 3px 0;
+      --shadow-md: rgba(0, 0, 0, 0.45) 0 4px 6px -2px, rgba(0, 0, 0, 0.3) 0 10px 15px -3px;
+      --shadow-lg: rgba(0, 0, 0, 0.55) 0 20px 25px -5px, rgba(0, 0, 0, 0.35) 0 10px 10px -5px;
+    }
+  }
+}

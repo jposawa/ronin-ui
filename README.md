@@ -47,6 +47,38 @@ for it, and no state lives in the library — you drive the attribute however yo
 | `data-ronin-theme="auto"` | explicitly follows the OS |
 | a nested element with its own value | that subtree only |
 
+### Palette presets
+
+Four alternatives to the default ship as opt-in stylesheets. Import one and name it in the same
+attribute — palette and light/dark are one value, not two:
+
+```ts
+import '@jposawa/ronin-ui/palettes/luna.css'
+```
+
+```tsx
+<div data-ronin-theme="luna">…</div>       {/* light */}
+<div data-ronin-theme="luna-dark">…</div>  {/* dark */}
+<div data-ronin-theme="luna-auto">…</div>  {/* follows the OS */}
+```
+
+| Preset | Character | Note |
+| --- | --- | --- |
+| *(default)* | night navy, starlight gold | |
+| `luna` | blue-grey night sky, no accent hue | colour comes from your content |
+| `brass` | navy with a muted, browner gold | the default, one step quieter |
+| `mint` | cold slate, neon mint | **dark-first** — see below |
+| `cyan` | near-black indigo, electric cyan | **dark-first** — see below |
+
+`mint` and `cyan` are built around accents that cannot survive a light background: `#27e9b5`
+reaches 1.57:1 on white and `#00c6e6` 2.05:1. Their light themes drop to a deep teal of the same
+hue — readable, and much less electric. If the glow is why you picked one, use `-dark` rather
+than `-auto`.
+
+They are not in the main bundle: four palettes times two themes is weight almost nobody needs,
+so each one costs an import or nothing at all. Every preset is checked by the same contrast
+script as the default — 39 pairs per theme, 390 in total.
+
 ## Overriding tokens
 
 The library defines token *names* and defaults; your app owns the values. Redefine any of them

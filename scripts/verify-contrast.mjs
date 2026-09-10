@@ -1,18 +1,20 @@
 /**
- * Reads the real token values out of `src/styles/tokens.css` and checks every
- * foreground/background pair the components can actually produce against WCAG AA.
+ * Reads the real token values out of the stylesheets and checks every foreground/background
+ * pair the components can produce against WCAG AA — for the default palette and for every
+ * opt-in preset in `src/styles/palettes/`.
  *
- * It parses the stylesheet rather than keeping its own copy of the hexes on purpose: an
- * earlier version held a copy, drifted from the source, and passed three combinations that
- * were failing in the browser.
+ * It parses the CSS rather than keeping its own copy of the hexes on purpose: an earlier
+ * version held a copy, drifted from the source, and passed four combinations that were failing
+ * in the browser.
  *
  * Run with `pnpm verify:contrast`. Exits non-zero on any failure.
  */
 
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
-const TOKENS_PATH = fileURLToPath(new URL('../src/styles/tokens.css', import.meta.url))
+const STYLES_DIR = fileURLToPath(new URL('../src/styles/', import.meta.url))
+const PALETTES_DIR = `${STYLES_DIR}palettes/`
 
 const SURFACE_TOKENS = ['bg', 'bg-elevated', 'surface']
 const TEXT_TOKENS = ['text', 'text-strong', 'text-muted']
@@ -50,37 +52,60 @@ const contrastRatio = (foreground, background) => {
 }
 
 /** Pulls every `--color-*: #hex` declaration out of the block a selector opens. */
-const readThemeBlock = (stylesheet, selector) => {
+const readBlock = (stylesheet, selector) => {
   const blockStart = stylesheet.indexOf(selector)
 
   if (blockStart === -1) {
-    throw new Error(`selector not found in tokens.css: ${selector}`)
+    throw new Error(`selector not found: ${selector}`)
   }
 
   const bodyStart = stylesheet.indexOf('{', blockStart)
   const bodyEnd = stylesheet.indexOf('}', bodyStart)
-  const body = stylesheet.slice(bodyStart, bodyEnd)
-
-  const declarations = body.matchAll(/--color-([a-z-]+):\s*(#[0-9a-f]{6})/gi)
+  const declarations = stylesheet.slice(bodyStart, bodyEnd).matchAll(/--color-([a-z-]+):\s*(#[0-9a-f]{6})/gi)
 
   return Object.fromEntries(
     [...declarations].map(([, tokenName, hex]) => [tokenName, hex.toLowerCase()]),
   )
 }
 
-const stylesheet = readFileSync(TOKENS_PATH, 'utf8')
+/**
+ * A preset's dark theme is its base overridden by the deltas in the `-dark` block, which is the
+ * whole point of the single-attribute shape: dark restates only what changes.
+ */
+const readThemes = () => {
+  const themes = []
 
-const themes = {
-  LIGHT: readThemeBlock(stylesheet, "[data-ronin-theme='light']"),
-  DARK: readThemeBlock(stylesheet, "[data-ronin-theme='dark']"),
+  const defaultTokens = readFileSync(`${STYLES_DIR}tokens.css`, 'utf8')
+  themes.push(['default · light', readBlock(defaultTokens, "[data-ronin-theme='light']")])
+  themes.push(['default · dark', readBlock(defaultTokens, "[data-ronin-theme='dark']")])
+
+  for (const fileName of readdirSync(PALETTES_DIR).filter((name) => name.endsWith('.css'))) {
+    const paletteName = fileName.replace('.css', '')
+    const stylesheet = readFileSync(`${PALETTES_DIR}${fileName}`, 'utf8')
+
+    /* `^=` for the base so it covers every variant; exact for the deltas, which must not
+     * match the base group when searched for. */
+    const base = readBlock(stylesheet, `[data-ronin-theme^='${paletteName}']`)
+    const darkDeltas = readBlock(stylesheet, `[data-ronin-theme='${paletteName}-dark']`)
+
+    themes.push([`${paletteName} · light`, base])
+    themes.push([`${paletteName} · dark`, { ...base, ...darkDeltas }])
+  }
+
+  return themes
 }
 
 let totalFailures = 0
 
-for (const [themeName, tokens] of Object.entries(themes)) {
+for (const [themeName, tokens] of readThemes()) {
   const failures = []
 
   const requirePair = (label, foreground, background, minimumRatio) => {
+    if (!foreground || !background) {
+      failures.push(`${label.padEnd(34)} missing token`)
+      return
+    }
+
     const value = contrastRatio(foreground, background)
 
     if (value < minimumRatio) {
@@ -109,22 +134,20 @@ for (const [themeName, tokens] of Object.entries(themes)) {
   requirePair('border vs bg-elevated', tokens.border, tokens['bg-elevated'], 1.4)
 
   const checkedPairs =
-    SURFACE_TOKENS.length * (TEXT_TOKENS.length + ACCENT_TOKENS.length) +
-    ACCENT_TOKENS.length +
-    2
-
-  console.log(`\n── ${themeName} ──`)
+    SURFACE_TOKENS.length * (TEXT_TOKENS.length + ACCENT_TOKENS.length) + ACCENT_TOKENS.length + 2
 
   if (failures.length === 0) {
-    console.log(`  ${checkedPairs} pairs — all pass`)
+    console.log(`  ok    ${themeName.padEnd(20)} ${checkedPairs} pairs`)
   } else {
+    console.log(`  FAIL  ${themeName}`)
     for (const failure of failures) {
-      console.log(`  FAIL ${failure}`)
+      console.log(`          ${failure}`)
     }
-    console.log(`  ${failures.length} of ${checkedPairs} pairs fail`)
   }
 
   totalFailures += failures.length
 }
+
+console.log(totalFailures === 0 ? '\n  all themes pass\n' : `\n  ${totalFailures} failing pairs\n`)
 
 process.exit(totalFailures === 0 ? 0 : 1)

@@ -1,0 +1,109 @@
+/**
+ * Mint — cold slate with a neon mint accent.
+ *
+ *   import '@jposawa/ronin-ui/palettes/mint.css'
+ *   <div data-ronin-theme="mint">        light
+ *   <div data-ronin-theme="mint-dark">   dark
+ *   <div data-ronin-theme="mint-auto">   follows prefers-color-scheme
+ *
+ * **Designed dark-first.** The neon mint that carries the dark theme reaches only 1.57:1 on
+ * white, so the light theme uses a deep teal instead: the same hue, far enough down in
+ * luminance to be readable, and noticeably less electric. If the neon is the reason you want
+ * this palette, use `mint-dark` rather than `mint-auto`.
+ *
+ * Verified by `pnpm verify:contrast` — 39 pairs per theme.
+ */
+
+@layer ronin.tokens {
+  [data-ronin-theme^='mint'] {
+    color-scheme: light;
+
+    --color-bg: #eff3f4;
+    --color-bg-elevated: #ffffff;
+    --color-surface: #e0e8ea;
+    --color-border: #becbcf;
+
+    --color-text: #35474f;
+    --color-text-strong: #051824;
+    --color-text-muted: #4e6068;
+    --color-text-disabled: #a0aeb3;
+
+    --color-primary: #0a6a55;
+    --color-secondary: #2c4a5f;
+    --color-success: #1f6b4a;
+    --color-warning: #8d5018;
+    --color-danger: #b21f28;
+    --color-info: #145a72;
+    --color-neutral: #4a5a62;
+
+    --color-on-accent: #eff3f4;
+    --color-overlay: rgba(5, 24, 36, 0.5);
+    --color-shimmer: rgba(5, 24, 36, 0.08);
+
+    --shadow-sm: rgba(5, 24, 36, 0.08) 0 1px 3px 0;
+    --shadow-md: rgba(5, 24, 36, 0.12) 0 4px 6px -2px, rgba(5, 24, 36, 0.06) 0 10px 15px -3px;
+    --shadow-lg: rgba(5, 24, 36, 0.18) 0 20px 25px -5px, rgba(5, 24, 36, 0.1) 0 10px 10px -5px;
+  }
+
+  [data-ronin-theme='mint-dark'] {
+    color-scheme: dark;
+
+    --color-bg: #051824;
+    --color-bg-elevated: #0e2432;
+    --color-surface: #162936;
+    --color-border: #2c4351;
+
+    --color-text: #a2b6c0;
+    --color-text-strong: #e8eff2;
+    --color-text-muted: #8da0ab;
+    --color-text-disabled: #475b68;
+
+    --color-primary: #27e9b5;
+    --color-secondary: #86aec6;
+    --color-success: #5ecf9b;
+    --color-warning: #e39c56;
+    --color-danger: #f0808a;
+    --color-info: #6fb6d8;
+    --color-neutral: #8fa2ad;
+
+    --color-on-accent: #051824;
+    --color-overlay: rgba(2, 12, 18, 0.7);
+    --color-shimmer: rgba(232, 239, 242, 0.08);
+
+    --shadow-sm: rgba(0, 0, 0, 0.3) 0 1px 3px 0;
+    --shadow-md: rgba(0, 0, 0, 0.45) 0 4px 6px -2px, rgba(0, 0, 0, 0.3) 0 10px 15px -3px;
+    --shadow-lg: rgba(0, 0, 0, 0.55) 0 20px 25px -5px, rgba(0, 0, 0, 0.35) 0 10px 10px -5px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    [data-ronin-theme='mint-auto'] {
+      color-scheme: dark;
+
+      --color-bg: #051824;
+      --color-bg-elevated: #0e2432;
+      --color-surface: #162936;
+      --color-border: #2c4351;
+
+      --color-text: #a2b6c0;
+      --color-text-strong: #e8eff2;
+      --color-text-muted: #8da0ab;
+      --color-text-disabled: #475b68;
+
+      --color-primary: #27e9b5;
+      --color-secondary: #86aec6;
+      --color-success: #5ecf9b;
+      --color-warning: #e39c56;
+      --color-danger: #f0808a;
+      --color-info: #6fb6d8;
+      --color-neutral: #8fa2ad;
+
+      --color-on-accent: #051824;
+      --color-overlay: rgba(2, 12, 18, 0.7);
+      --color-shimmer: rgba(232, 239, 242, 0.08);
+
+      --shadow-sm: rgba(0, 0, 0, 0.3) 0 1px 3px 0;
+      --shadow-md: rgba(0, 0, 0, 0.45) 0 4px 6px -2px, rgba(0, 0, 0, 0.3) 0 10px 15px -3px;
+      --shadow-lg: rgba(0, 0, 0, 0.55) 0 20px 25px -5px, rgba(0, 0, 0, 0.35) 0 10px 10px -5px;
+    }
+  }
+}

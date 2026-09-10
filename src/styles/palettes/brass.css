@@ -1,0 +1,108 @@
+/**
+ * Brass — deep navy with a muted, unpolished gold. The same family as the default palette, one
+ * step quieter: the gold is browner and there is no ivory, so it reads as metal rather than
+ * as starlight.
+ *
+ *   import '@jposawa/ronin-ui/palettes/brass.css'
+ *   <div data-ronin-theme="brass">        light
+ *   <div data-ronin-theme="brass-dark">   dark
+ *   <div data-ronin-theme="brass-auto">   follows prefers-color-scheme
+ *
+ * Verified by `pnpm verify:contrast` — 39 pairs per theme.
+ */
+
+@layer ronin.tokens {
+  [data-ronin-theme^='brass'] {
+    color-scheme: light;
+
+    --color-bg: #f4f2ec;
+    --color-bg-elevated: #ffffff;
+    --color-surface: #e8e4d9;
+    --color-border: #cdc5b2;
+
+    --color-text: #3b4453;
+    --color-text-strong: #102134;
+    --color-text-muted: #565f70;
+    --color-text-disabled: #a5a99f;
+
+    --color-primary: #1e3a5c;
+    --color-secondary: #6f5824;
+    --color-success: #226b4a;
+    --color-warning: #92501a;
+    --color-danger: #b21f28;
+    --color-info: #145b73;
+    --color-neutral: #4c5563;
+
+    --color-on-accent: #f4f2ec;
+    --color-overlay: rgba(16, 33, 52, 0.5);
+    --color-shimmer: rgba(16, 33, 52, 0.08);
+
+    --shadow-sm: rgba(16, 33, 52, 0.08) 0 1px 3px 0;
+    --shadow-md:
+      rgba(16, 33, 52, 0.12) 0 4px 6px -2px, rgba(16, 33, 52, 0.06) 0 10px 15px -3px;
+    --shadow-lg:
+      rgba(16, 33, 52, 0.18) 0 20px 25px -5px, rgba(16, 33, 52, 0.1) 0 10px 10px -5px;
+  }
+
+  [data-ronin-theme='brass-dark'] {
+    color-scheme: dark;
+
+    --color-bg: #102134;
+    --color-bg-elevated: #1a293f;
+    --color-surface: #24344c;
+    --color-border: #3a4759;
+
+    --color-text: #a9b6c6;
+    --color-text-strong: #eceff3;
+    --color-text-muted: #93a0b0;
+    --color-text-disabled: #4d5a6b;
+
+    --color-primary: #c9a961;
+    --color-secondary: #8fa6c2;
+    --color-success: #5cc094;
+    --color-warning: #e09a52;
+    --color-danger: #f0808a;
+    --color-info: #6fb2d4;
+    --color-neutral: #909dad;
+
+    --color-on-accent: #102134;
+    --color-overlay: rgba(6, 13, 22, 0.7);
+    --color-shimmer: rgba(236, 239, 243, 0.08);
+
+    --shadow-sm: rgba(0, 0, 0, 0.3) 0 1px 3px 0;
+    --shadow-md: rgba(0, 0, 0, 0.45) 0 4px 6px -2px, rgba(0, 0, 0, 0.3) 0 10px 15px -3px;
+    --shadow-lg: rgba(0, 0, 0, 0.55) 0 20px 25px -5px, rgba(0, 0, 0, 0.35) 0 10px 10px -5px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    [data-ronin-theme='brass-auto'] {
+      color-scheme: dark;
+
+      --color-bg: #102134;
+      --color-bg-elevated: #1a293f;
+      --color-surface: #24344c;
+      --color-border: #3a4759;
+
+      --color-text: #a9b6c6;
+      --color-text-strong: #eceff3;
+      --color-text-muted: #93a0b0;
+      --color-text-disabled: #4d5a6b;
+
+      --color-primary: #c9a961;
+      --color-secondary: #8fa6c2;
+      --color-success: #5cc094;
+      --color-warning: #e09a52;
+      --color-danger: #f0808a;
+      --color-info: #6fb2d4;
+      --color-neutral: #909dad;
+
+      --color-on-accent: #102134;
+      --color-overlay: rgba(6, 13, 22, 0.7);
+      --color-shimmer: rgba(236, 239, 243, 0.08);
+
+      --shadow-sm: rgba(0, 0, 0, 0.3) 0 1px 3px 0;
+      --shadow-md: rgba(0, 0, 0, 0.45) 0 4px 6px -2px, rgba(0, 0, 0, 0.3) 0 10px 15px -3px;
+      --shadow-lg: rgba(0, 0, 0, 0.55) 0 20px 25px -5px, rgba(0, 0, 0, 0.35) 0 10px 10px -5px;
+    }
+  }
+}

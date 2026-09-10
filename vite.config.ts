@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
 import react from '@vitejs/plugin-react'
@@ -11,20 +11,33 @@ const resolveFromRoot = (relativePath: string) =>
 /**
  * `tokens.css` is bundled into `styles.css` like every other stylesheet, but it is also
  * published on its own so a consumer can take the tokens without the components.
+ *
+ * The palette presets are copied out too, and are **not** in the bundle: five palettes times
+ * two themes is weight almost nobody uses, so each is an opt-in import.
  */
-const emitTokensStylesheet = (): Plugin => ({
-  name: 'ronin-emit-tokens',
+const emitStandaloneStylesheets = (): Plugin => ({
+  name: 'ronin-emit-stylesheets',
   generateBundle() {
     this.emitFile({
       type: 'asset',
       fileName: 'tokens.css',
       source: readFileSync(resolveFromRoot('./src/styles/tokens.css'), 'utf8'),
     })
+
+    const palettesDir = resolveFromRoot('./src/styles/palettes')
+
+    for (const fileName of readdirSync(palettesDir).filter((name) => name.endsWith('.css'))) {
+      this.emitFile({
+        type: 'asset',
+        fileName: `palettes/${fileName}`,
+        source: readFileSync(`${palettesDir}/${fileName}`, 'utf8'),
+      })
+    }
   },
 })
 
 export default defineConfig({
-  plugins: [react(), libInjectCss(), emitTokensStylesheet()],
+  plugins: [react(), libInjectCss(), emitStandaloneStylesheets()],
   build: {
     lib: {
       entry: resolveFromRoot('./src/index.ts'),

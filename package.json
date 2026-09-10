@@ -21,7 +21,8 @@
     },
     "./styles.css": "./dist/styles.css",
     "./tokens.css": "./dist/tokens.css",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./palettes/*": "./dist/palettes/*"
   },
   "publishConfig": {
     "access": "public"
