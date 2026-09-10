@@ -1,0 +1,128 @@
+@layer ronin.components {
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+
+    .switch {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      /* The whole row is the control, so the whole row is the touch target. */
+      min-height: var(--size-touch-target);
+
+      background: transparent;
+      border: none;
+      padding: 0;
+
+      color: var(--color-text-strong);
+      font-family: inherit;
+      font-size: var(--text-md);
+      text-align: start;
+
+      cursor: pointer;
+
+      &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+        border-radius: var(--border-radius-sm);
+      }
+
+      &:disabled {
+        color: var(--color-text-disabled);
+        cursor: not-allowed;
+
+        .track {
+          background: var(--color-surface);
+          border-color: var(--color-border);
+        }
+
+        .thumb {
+          background: var(--color-text-disabled);
+        }
+      }
+
+      /**
+       * Read off `aria-checked`, which is the attribute the screen reader announces — never a
+       * second one mirroring it.
+       */
+      &[aria-checked='true'] {
+        .track {
+          background: var(--color-primary);
+          border-color: var(--color-primary);
+        }
+
+        .thumb {
+          background: var(--color-on-accent);
+          transform: translateX(1em);
+        }
+      }
+
+      &:disabled[aria-checked='true'] .thumb {
+        transform: translateX(1em);
+      }
+
+      /**
+       * The settings row: label first, track at the far edge. It spans its container, which is
+       * a width the component was told to have — the arrangement means nothing without it.
+       */
+      &[data-label-position='start'] {
+        flex-direction: row-reverse;
+        width: 100%;
+
+        .label {
+          flex-grow: 1;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .track,
+        .thumb {
+          transition: none;
+        }
+      }
+    }
+
+    /**
+     * Sized in `em` so the switch scales with whatever font size the consumer put around it —
+     * a library control lands in text contexts it cannot predict.
+     */
+    .track {
+      display: flex;
+      align-items: center;
+      width: 2.25em;
+      height: 1.25em;
+      flex-shrink: 0;
+      padding: 0.125em;
+
+      background: var(--color-surface);
+      border: var(--border-width) solid var(--color-border);
+      border-radius: var(--border-radius-pill);
+
+      transition:
+        background-color var(--duration-fast) var(--easing-standard),
+        border-color var(--duration-fast) var(--easing-standard);
+    }
+
+    .thumb {
+      width: 0.875em;
+      height: 0.875em;
+
+      background: var(--color-text-muted);
+      border-radius: var(--border-radius-pill);
+
+      transition:
+        transform var(--duration-fast) var(--easing-standard),
+        background-color var(--duration-fast) var(--easing-standard);
+    }
+
+    .label {
+      min-width: 0;
+    }
+
+    .hint {
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+    }
+  }
+}

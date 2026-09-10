@@ -1,0 +1,13 @@
+@layer ronin.components {
+  .message {
+    font-size: var(--text-sm);
+
+    &[data-tone='hint'] {
+      color: var(--color-text-muted);
+    }
+
+    &[data-tone='error'] {
+      color: var(--color-danger);
+    }
+  }
+}

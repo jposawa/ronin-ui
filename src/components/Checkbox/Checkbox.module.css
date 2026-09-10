@@ -1,0 +1,129 @@
+@layer ronin.components {
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      /* The row is the touch target, not the box alone. */
+      min-height: var(--size-touch-target);
+    }
+
+    /**
+     * `appearance: none` on the input itself, rather than hiding it behind a decorated span.
+     * The element that is styled stays the one that is focused, validated and announced.
+     *
+     * Sized in `em`, so the box tracks whatever font size the consumer put around it.
+     */
+    .input {
+      appearance: none;
+      position: relative;
+
+      width: 1.15em;
+      height: 1.15em;
+      flex-shrink: 0;
+      margin: 0;
+
+      background: var(--color-bg-elevated);
+      border: var(--border-width) solid var(--color-border);
+      border-radius: var(--border-radius-sm);
+
+      cursor: pointer;
+
+      transition:
+        background-color var(--duration-fast) var(--easing-standard),
+        border-color var(--duration-fast) var(--easing-standard);
+
+      &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+      }
+
+      /**
+       * The tick and the dash are drawn from borders on one pseudo-element, so there is no
+       * glyph to centre and no icon font to load.
+       */
+      &::after {
+        content: '';
+        position: absolute;
+        opacity: 0;
+      }
+
+      &:checked,
+      &:indeterminate {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+
+        &::after {
+          opacity: 1;
+          border-color: var(--color-on-accent);
+        }
+      }
+
+      &:checked::after {
+        top: 0.1em;
+        left: 0.32em;
+        width: 0.3em;
+        height: 0.55em;
+
+        border-right: 2px solid currentcolor;
+        border-bottom: 2px solid currentcolor;
+        transform: rotate(45deg);
+      }
+
+      /* The dash wins when both apply: a parent box is indeterminate *or* checked, not both. */
+      &:indeterminate::after {
+        top: 50%;
+        left: 0.22em;
+        width: 0.55em;
+        height: 0;
+
+        border-top: 2px solid currentcolor;
+        transform: translateY(-50%);
+      }
+
+      &[aria-invalid] {
+        border-color: var(--color-danger);
+
+        &:focus-visible {
+          outline-color: var(--color-danger);
+        }
+      }
+
+      &:disabled {
+        background: var(--color-surface);
+        border-color: var(--color-border);
+        cursor: not-allowed;
+
+        &::after {
+          border-color: var(--color-text-disabled);
+        }
+
+        /* The fill would read as active; a disabled box that is checked is still not active. */
+        &:checked,
+        &:indeterminate {
+          background: var(--color-surface);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+      }
+    }
+
+    .label {
+      min-width: 0;
+      color: var(--color-text-strong);
+      font-size: var(--text-md);
+      cursor: pointer;
+    }
+
+    &:has(.input:disabled) .label {
+      color: var(--color-text-disabled);
+      cursor: not-allowed;
+    }
+  }
+}

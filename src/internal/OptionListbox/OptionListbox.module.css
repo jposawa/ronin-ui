@@ -1,0 +1,238 @@
+@layer ronin.components {
+  /**
+   * The field owns its internal rhythm only — no outer margin and no width, so the consumer's
+   * container decides how much room it gets. Same shape as `Input`, on purpose: a select and a
+   * text field sitting in one form should line up without either being nudged.
+   */
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+
+    .label {
+      color: var(--color-text-strong);
+      font-size: var(--text-sm);
+      font-weight: 600;
+    }
+
+    .trigger {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      width: 100%;
+      min-height: var(--size-touch-target);
+      padding: 0.5em 0.75em;
+
+      background: var(--color-bg-elevated);
+      border: var(--border-width) solid var(--color-border);
+      border-radius: var(--border-radius-md);
+
+      color: var(--color-text-strong);
+      font-family: inherit;
+      /* 16px floor — anything smaller makes iOS zoom the page when the field is tapped. */
+      font-size: var(--text-md);
+      text-align: start;
+
+      cursor: pointer;
+      transition: border-color var(--duration-fast) var(--easing-standard);
+
+      &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+      }
+
+      /* Read off the attribute that already carries the state, as `Input` does. */
+      &[aria-invalid] {
+        border-color: var(--color-danger);
+
+        &:focus-visible {
+          outline-color: var(--color-danger);
+        }
+      }
+
+      &:disabled {
+        background: var(--color-surface);
+        color: var(--color-text-disabled);
+        cursor: not-allowed;
+      }
+
+      /* The chevron turns south while the list is open — the state is on the trigger already. */
+      &[aria-expanded='true'] .icon {
+        transform: rotate(135deg);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+
+        .icon {
+          transition: none;
+        }
+      }
+    }
+
+    .summary {
+      flex-grow: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      /* Nothing chosen yet: the placeholder reads like one, not like a value. */
+      &[data-empty] {
+        color: var(--color-text-muted);
+      }
+    }
+
+    /* A chevron drawn from two borders — no glyph, so it centres in any typeface. */
+    .icon {
+      width: 0.5rem;
+      height: 0.5rem;
+      flex-shrink: 0;
+
+      border-top: 2px solid currentcolor;
+      border-right: 2px solid currentcolor;
+      /* Points east at rest; the open rule above turns it south. */
+      transform: rotate(45deg);
+
+      transition: transform var(--duration-fast) var(--easing-standard);
+    }
+  }
+
+  /**
+   * The popup is portalled to `<body>`, so it is not nested under `.field` here.
+   *
+   * Width and available height arrive from `useFloatingPanel` as custom properties; the cap is
+   * the component's own hard stop and is overridable per instance through `--listbox-height-cap`.
+   */
+  .popup {
+    --listbox-height-cap: 20rem;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translate(var(--floating-x, 0), var(--floating-y, 0));
+
+    display: flex;
+    flex-direction: column;
+    width: var(--floating-width, auto);
+    max-height: min(var(--floating-available-height, 100svh), var(--listbox-height-cap));
+    overflow: hidden;
+
+    background: var(--color-bg-elevated);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+
+    z-index: var(--z-dropdown);
+
+    .search {
+      width: 100%;
+      min-height: var(--size-touch-target);
+      padding: 0.5em 0.75em;
+
+      background: transparent;
+      border: none;
+      border-bottom: var(--border-width) solid var(--color-border);
+
+      color: var(--color-text-strong);
+      font-family: inherit;
+      font-size: var(--text-md);
+
+      &::placeholder {
+        color: var(--color-text-muted);
+      }
+
+      /* The ring sits inside: the field spans the popup's full width, and an outset outline
+         would be clipped by the popup's own `overflow: hidden`. */
+      &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: -2px;
+      }
+    }
+
+    .list {
+      margin: 0;
+      padding: var(--space-1);
+      overflow-y: auto;
+      list-style: none;
+
+      /* Focus is moved here when there is no search field; the ring belongs on the option. */
+      &:focus-visible {
+        outline: none;
+      }
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      min-height: var(--size-touch-target);
+      padding: var(--space-2) var(--space-3);
+
+      border-radius: var(--border-radius-sm);
+
+      color: var(--color-text-strong);
+      font-size: var(--text-md);
+
+      cursor: pointer;
+
+      &:hover {
+        background: var(--color-surface);
+      }
+
+      /**
+       * The keyboard highlight. It is not focus — focus stays on the search field or the list,
+       * which is what `aria-activedescendant` is for — so it is drawn rather than outlined.
+       */
+      &[data-active] {
+        background: var(--color-primary-bg);
+        box-shadow: inset 0 0 0 var(--border-width) var(--color-primary-border);
+      }
+
+      &[aria-selected='true'] {
+        color: var(--color-primary);
+        font-weight: 600;
+
+        .check {
+          opacity: 1;
+        }
+      }
+
+      &[aria-disabled] {
+        color: var(--color-text-disabled);
+        cursor: not-allowed;
+
+        &:hover {
+          background: transparent;
+        }
+      }
+    }
+
+    .optionLabel {
+      flex-grow: 1;
+      min-width: 0;
+    }
+
+    /**
+     * A tick drawn from two borders, kept in the layout at zero opacity while unselected so a
+     * row does not change width the moment it is chosen.
+     */
+    .check {
+      width: 0.35rem;
+      height: 0.6rem;
+      flex-shrink: 0;
+      margin-block-end: 0.15rem;
+      opacity: 0;
+
+      border-right: 2px solid currentcolor;
+      border-bottom: 2px solid currentcolor;
+      transform: rotate(45deg);
+    }
+
+    .empty {
+      padding: var(--space-3);
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+    }
+  }
+}

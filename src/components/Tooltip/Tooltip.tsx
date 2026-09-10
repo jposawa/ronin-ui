@@ -1,16 +1,10 @@
-import {
-  autoUpdate,
-  computePosition,
-  flip,
-  offset,
-  type Placement,
-  shift,
-} from '@floating-ui/dom'
+import type { Placement } from '@floating-ui/dom'
 import clsx from 'clsx'
 import React from 'react'
 import { createPortal } from 'react-dom'
 
 import { RONIN_SCOPE } from '../../constants'
+import { useFloatingPanel } from '../../internal'
 import type { BaseComponent } from '../../types'
 import styles from './Tooltip.module.css'
 
@@ -42,35 +36,16 @@ export const Tooltip = ({
 }: TooltipProps) => {
   const [isVisible, setIsVisible] = React.useState(false)
   const [triggerElement, setTriggerElement] = React.useState<HTMLSpanElement | null>(null)
-  const tooltipRef = React.useRef<HTMLDivElement>(null)
+  const [tooltipElement, setTooltipElement] = React.useState<HTMLDivElement | null>(null)
   const tooltipId = React.useId()
 
-  React.useEffect(() => {
-    const tooltipElement = tooltipRef.current
-
-    if (!isVisible || !triggerElement || !tooltipElement) {
-      return
-    }
-
-    const updatePosition = async () => {
-      const { x, y } = await computePosition(triggerElement, tooltipElement, {
-        placement,
-        strategy: 'fixed',
-        middleware: [offset(offsetDistance), flip(), shift({ padding: 8 })],
-      })
-
-      /**
-       * Written as custom properties rather than as `transform` directly: the stylesheet keeps
-       * ownership of how the position is applied, and JS only supplies the two numbers it
-       * alone can compute. Same rule as the `color` prop on `Badge` — inline style carries a
-       * variable, never a finished declaration.
-       */
-      tooltipElement.style.setProperty('--tooltip-x', `${Math.round(x)}px`)
-      tooltipElement.style.setProperty('--tooltip-y', `${Math.round(y)}px`)
-    }
-
-    return autoUpdate(triggerElement, tooltipElement, updatePosition)
-  }, [isVisible, triggerElement, placement, offsetDistance])
+  useFloatingPanel({
+    isOpen: isVisible,
+    anchorElement: triggerElement,
+    panelElement: tooltipElement,
+    placement,
+    offsetDistance,
+  })
 
   React.useEffect(() => {
     if (!isVisible) {
@@ -113,7 +88,7 @@ export const Tooltip = ({
       {isVisible
         ? createPortal(
             <div
-              ref={tooltipRef}
+              ref={setTooltipElement}
               id={tooltipId}
               role="tooltip"
               className={clsx(RONIN_SCOPE, styles.tooltip, className)}

@@ -1,2 +1,5 @@
 allowBuilds:
-  esbuild: set this to true or false
+  # Nothing exercises esbuild's native binary here: Vite 8 builds through rolldown, and vitest,
+  # vite build and tsc all run without it. Left unanswered, pnpm exits 1 on ERR_PNPM_IGNORED_BUILDS
+  # and every `pnpm <script>` fails at the dependency check before running anything.
+  esbuild: false
