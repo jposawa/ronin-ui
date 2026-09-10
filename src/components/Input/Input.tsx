@@ -2,18 +2,16 @@ import clsx from 'clsx'
 import React from 'react'
 
 import { RONIN_SCOPE } from '../../constants'
+import { FieldMessage, type FieldMessageCopy } from '../../internal'
 import type { BaseComponent } from '../../types'
 import styles from './Input.module.css'
 
 export type InputProps = BaseComponent &
+  FieldMessageCopy &
   Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'> & {
     value: string
     onValueChange: (value: string) => void
     label?: string
-    /** Helper text under the field. Hidden while `errorMessage` is showing. */
-    hint?: string
-    /** Presence of a message is what marks the field invalid — there is no separate flag. */
-    errorMessage?: string
   }
 
 /**
@@ -76,17 +74,10 @@ export const Input = ({
        *
        * `role="alert"` only while invalid, so an error that appears after the field has been
        * left is announced rather than sitting silently until the field is focused again.
+       *
+       * Both rules live in `FieldMessage` now, shared with the select fields and `Checkbox`.
        */}
-      {message ? (
-        <span
-          id={messageId}
-          className={styles.message}
-          data-tone={isInvalid ? 'error' : 'hint'}
-          role={isInvalid ? 'alert' : undefined}
-        >
-          {message}
-        </span>
-      ) : null}
+      <FieldMessage id={messageId} hint={hint} errorMessage={errorMessage} />
     </div>
   )
 }

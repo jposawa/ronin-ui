@@ -19,7 +19,7 @@
     top: 0;
     left: 0;
     /* floating-ui supplies the two numbers; the placement itself stays in CSS. */
-    transform: translate(var(--tooltip-x, 0), var(--tooltip-y, 0));
+    transform: translate(var(--floating-x, 0), var(--floating-y, 0));
     z-index: var(--z-tooltip);
 
     max-width: 22rem;

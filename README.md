@@ -78,15 +78,22 @@ import '@jposawa/ronin-ui/styles.css' // the component CSS, if you want to contr
 | | |
 | --- | --- |
 | `Button` | `intent` × `variant`, two orthogonal axes |
-| `Input` | controlled, with label, hint and error wired together |
+| `Input` · `Checkbox` | controlled, with label, hint and error wired together |
+| `Select` · `MultiSelect` | WAI-ARIA combobox, optional option search, one shared listbox |
+| `Switch` | `role="switch"`, for a change that takes effect immediately |
 | `Modal` · `Drawer` | native `<dialog>`: focus trap, Escape and top layer from the browser |
 | `Tooltip` | opens on hover *and* focus, positioned with floating-ui |
+| `Popover` | non-modal `role="dialog"` anchored to its trigger, and it takes focus |
 | `Tabs` | roving focus, arrow keys, horizontal or vertical |
 | `Collapse` | disclosure with `aria-expanded` and `aria-controls` |
 | `Card` · `Section` · `SectionLabel` | surfaces and headings |
 | `Avatar` · `Badge` · `Chip` · `Stepper` | small pieces |
 
 Every component takes `className` and `style`, so one margin never means forking a component.
+
+Importing one component ships one component — the barrel re-exports are tree-shaken away.
+Measured, not assumed: a consumer importing `{ Button }` bundles about **1 kB** of JavaScript and
+none of floating-ui. The stylesheet is the exception; see Known limits.
 
 ## Decisions behind it
 
@@ -108,8 +115,13 @@ Honest ones, at `0.1`:
 
 - **The API is not stable.** On `0.x` a breaking change bumps the minor, and it will.
 - **ESM only.** `require()` will not resolve it.
+- **The CSS is all-or-nothing.** The JavaScript tree-shakes per component, but the stylesheet
+  does not: one `styles.css`, about 5.5 kB gzipped, whether you use one component or every one.
 - **`:has()` is used** for two rules in `Collapse`. Baseline since late 2023 — on an older
   browser the chevron does not rotate and the header's focus ring is missing. Nothing breaks.
+- **`Popover` is portalled**, so tabbing forward out of an open panel continues from the end of
+  the document rather than from after the trigger. That is the price of not being clipped by an
+  `overflow: hidden` ancestor.
 - **Accessibility is tested, not audited.** Roles, names, state and keyboard paths have unit
   tests; there has been no screen-reader pass and no automated audit. Treat the components as a
   good starting point, not a certification.

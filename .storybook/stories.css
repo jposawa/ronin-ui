@@ -47,6 +47,11 @@
   max-width: 22rem;
 }
 
+/* Nested checkbox rows under a parent box. */
+.storyIndent {
+  padding-inline-start: var(--space-5);
+}
+
 .storyPage {
   max-width: 30rem;
 }
@@ -94,6 +99,11 @@
 /* Width supplied per instance through a variable — see the note at the top. */
 .storyWidth {
   width: var(--story-width);
+}
+
+/* Font size supplied the same way, for a story about a component scaling with its context. */
+.storyFontSize {
+  font-size: var(--story-font-size);
 }
 
 /* The canvas the theme decorator paints. */

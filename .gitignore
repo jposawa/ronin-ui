@@ -8,3 +8,8 @@ storybook-static
 
 # Editor and assistant settings are per-machine, not per-project.
 .vscode
+
+# Decision records and working notes. Local by choice — they carry migration notes about the
+# consuming projects and the reasoning behind rejected options, which is bench talk rather
+# than package documentation.
+specs
