@@ -123,6 +123,17 @@
     border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-md);
 
+    /**
+     * Declared, not inherited — and this is the one place in the library where that is right.
+     *
+     * The popup is portalled to `<body>`, so it sits outside the container whose typography it
+     * is meant to match: `inherit` there reaches the document default, which is why the options
+     * came out in a different face from every other component. `Tooltip` and `Popover` are
+     * portalled too and both already declare it.
+     */
+    color: var(--color-text);
+    font-family: var(--font-sans);
+
     z-index: var(--z-dropdown);
 
     .search {

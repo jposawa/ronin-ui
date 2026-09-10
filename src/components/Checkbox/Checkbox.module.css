@@ -45,10 +45,16 @@
       /**
        * The tick and the dash are drawn from borders on one pseudo-element, so there is no
        * glyph to centre and no icon font to load.
+       *
+       * Both are placed from the centre and nudged with `transform`, rather than from `top` and
+       * `left` offsets guessed per shape — those only line up at one font size, and the box is
+       * sized in `em` precisely so it can land at any.
        */
       &::after {
         content: '';
         position: absolute;
+        top: 50%;
+        left: 50%;
         opacity: 0;
       }
 
@@ -56,33 +62,38 @@
       &:indeterminate {
         background: var(--color-primary);
         border-color: var(--color-primary);
+        /**
+         * The mark reads `currentcolor`, so its colour is set once here.
+         *
+         * Setting it on the pseudo-element's `border-color` instead did not survive: the
+         * `border-right` / `border-bottom` shorthands below come later at equal specificity and
+         * reset the colour to `currentcolor`, which was still the surrounding ink. The result
+         * was a dark tick on a dark fill — a checked box that read as a solid blob.
+         */
+        color: var(--color-on-accent);
 
         &::after {
           opacity: 1;
-          border-color: var(--color-on-accent);
         }
       }
 
       &:checked::after {
-        top: 0.1em;
-        left: 0.32em;
         width: 0.3em;
-        height: 0.55em;
+        height: 0.6em;
 
         border-right: 2px solid currentcolor;
         border-bottom: 2px solid currentcolor;
-        transform: rotate(45deg);
+        /* -60% rather than -50%: a rotated tick carries its visual mass below its box centre. */
+        transform: translate(-50%, -60%) rotate(45deg);
       }
 
       /* The dash wins when both apply: a parent box is indeterminate *or* checked, not both. */
       &:indeterminate::after {
-        top: 50%;
-        left: 0.22em;
-        width: 0.55em;
+        width: 0.6em;
         height: 0;
 
         border-top: 2px solid currentcolor;
-        transform: translateY(-50%);
+        transform: translate(-50%, -50%);
       }
 
       &[aria-invalid] {
@@ -98,14 +109,15 @@
         border-color: var(--color-border);
         cursor: not-allowed;
 
-        &::after {
-          border-color: var(--color-text-disabled);
-        }
+        /* Same handoff as the checked state: the mark follows `color`, not a border override. */
+        color: var(--color-text-disabled);
 
         /* The fill would read as active; a disabled box that is checked is still not active. */
         &:checked,
         &:indeterminate {
           background: var(--color-surface);
+          border-color: var(--color-border);
+          color: var(--color-text-disabled);
         }
       }
 
